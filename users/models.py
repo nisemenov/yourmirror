@@ -23,11 +23,11 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser):
     objects = UserManager()
 
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
     class Roles(models.TextChoices):
-        ADMIN = 'admin'
+        ADMIN = "admin"
         USER = "user"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -35,7 +35,7 @@ class User(AbstractBaseUser):
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=128)
 
-    role = models.CharField(max_length=20, choices=Roles.choices, verbose_name='Роль')
+    role = models.CharField(max_length=20, choices=Roles.choices, verbose_name="Роль")
 
     telegram_id = models.CharField(max_length=64, unique=True, null=True, blank=True)
 
@@ -52,3 +52,15 @@ class User(AbstractBaseUser):
     @property
     def is_staff(self):
         return self.is_admin
+
+
+class Follow(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="follower",
+    )
+    following = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="following",
+    )
+
+    class Meta:
+        unique_together = ["user", "following"]
