@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+@source "../../../templates/**/*.{html}";
+@source "../../../users/templates/**/*.{html}";
+
+html {
+    font-style: normal;
+    font-weight: 300;
+    font-size: 16px;
+    letter-spacing: .07em;
+    line-height: 1.33333rem;
+    font-family: "Pragmatica", "Arial", sans-serif;
+    color: #000;
+    background-color: #f8f8f8;
+}
