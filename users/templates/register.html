@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Регистрация{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-center min-h-[80vh]">
+  <div class="bg-white shadow-md rounded-2xl p-8 w-full max-w-md border border-gray-200">
+    <h2 class="text-2xl font-semibold mb-6 text-center">Регистрация</h2>
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+      <div class="space-y-4">
+        {% for field in form %}
+          <div>
+            {{ field.label_tag }}
+            {{ field }}
+            {% if field.errors %}
+              <p class="text-red-500 text-sm mt-1">{{ field.errors.0 }}</p>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+      <button type="submit" class="w-full mt-6 bg-black text-white py-3 rounded-lg hover:bg-gray-800 transition">
+        Зарегистрироваться
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock %}

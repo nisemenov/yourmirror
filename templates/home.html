@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <section class="text-center mb-12">
+      <h1 class="text-3xl uppercase mb-3">
+      Собери свои желания. Поделись с близкими.
+    </h1>
+    <p class="mt-4 text-lg text-gray-600 max-w-xl mx-auto">
+      I'll Be Your Mirror — это твой личный wishlist, в который можно добавлять что угодно и делиться с другими. Без рекламы. Просто.
+    </p>
+    <div class="mt-6 space-x-4">
+      {% if not user.is_authenticated %}
+        <a href="{% url 'register' %}" class="px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition">
+          Начать
+        </a>
+        <a href="{% url 'login' %}" class="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-100 transition">
+          Уже есть аккаунт
+        </a>
+      {% else %}
+        <a href="{% url 'profile' %}" class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-500 transition">
+          Перейти в профиль
+        </a>
+      {% endif %}
+    </div>
+  </section>
+
+  <section class="grid sm:grid-cols-2 gap-8">
+    <div class="bg-white rounded-2xl shadow p-6 text-left">
+      <h2 class="text-xl font-semibold mb-2">🎁 Создавай желания</h2>
+      <p class="text-gray-600">Добавляй ссылки, описания, картинки — чтобы не забыть, что ты любишь.</p>
+    </div>
+    <div class="bg-white rounded-2xl shadow p-6 text-left">
+      <h2 class="text-xl font-semibold mb-2">👀 Подписывайся</h2>
+      <p class="text-gray-600">Следи за вишлистами друзей, родных и любимых. Узнай, что им подарить.</p>
+    </div>
+    <div class="bg-white rounded-2xl shadow p-6 text-left">
+      <h2 class="text-xl font-semibold mb-2">🤖 Бот в Telegram</h2>
+      <p class="text-gray-600">Добавляй желания прямо из телеги. Без лишнего шума.</p>
+    </div>
+    <div class="bg-white rounded-2xl shadow p-6 text-left">
+      <h2 class="text-xl font-semibold mb-2">📻 Включай радио</h2>
+      <p class="text-gray-600">Немного атмосферы. Плейлист из твоих треков, прямо на главной.</p>
+    </div>
+  </section>
+{% endblock %}

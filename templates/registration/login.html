@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Авторизация{% endblock %}
+
+{% block content %}
+  <section class="flex justify-center items-center min-h-screen bg-[#f8f8f8]">
+    <div class="w-full max-w-lg px-8 py-10 bg-[#f8f8f8]">
+      
+      <!-- Ссылки "авторизация регистрация" -->
+      <div class="mb-8">
+        <span class="text-sm text-gray-800 uppercase underline cursor-default">авторизация</span>
+        <a href="{% url 'register' %}" class="ml-4 text-sm text-gray-500 uppercase hover:text-gray-700">регистрация</a>
+      </div>
+
+      <!-- Форма авторизации -->
+      <h2 class="text-left text-2xl font-light mb-8 uppercase">Вход в кабинет</h2>
+
+      <form method="post" class="space-y-8">
+        {% csrf_token %}
+        
+        <!-- Email -->
+        <div>
+          <label for="id_username" class="block text-xs font-medium text-gray-700 uppercase">Почта или телефон</label>
+          <input type="email" name="username" id="id_username" class="mt-2 block w-full border-b border-black focus:border-black outline-none bg-transparent py-3 text-base" required>
+        </div>
+        
+        <!-- Password -->
+        <div>
+          <label for="id_password" class="block text-xs font-medium text-gray-700 uppercase">Пароль</label>
+          <input type="password" name="password" id="id_password" class="mt-2 block w-full border-b border-black focus:border-black outline-none bg-transparent py-3 text-base" required>
+        </div>
+
+        <!-- Чекбокс и ссылка "Забыли пароль?" -->
+        <div class="flex items-center justify-between text-xs">
+          <div class="flex items-center">
+            <input type="checkbox" id="remember_me" name="remember_me" class="h-4 w-4 text-gray-600 focus:ring-0 border-gray-300 rounded">
+            <label for="remember_me" class="ml-2 text-gray-700 uppercase">Запомнить меня</label>
+          </div>
+          <a href="#" class="text-gray-500 uppercase hover:text-gray-700">Забыли пароль?</a>
+        </div>
+
+        <!-- Кнопка -->
+        <div>
+          <button type="submit" class="w-full bg-black text-white py-4 px-4 rounded-none hover:bg-gray-800 focus:outline-none focus:ring-0 uppercase">
+            Войти
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
+{% endblock %}

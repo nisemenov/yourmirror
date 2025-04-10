@@ -1,0 +1,22 @@
+<header class="py-6 px-6">
+    <div class="flex justify-between items-center">
+        <a href="/" class="uppercase">
+            главная
+        </a>
+
+        <div class="uppercase">
+            {% if user.is_authenticated %}
+            <a href="{% url 'profile' %}" class="pr-4">
+                твои желания
+            </a>
+            <a href="{% url 'profile' %}">
+                желания друзей
+            </a>
+            {% else %}
+            <a href="{% url 'login' %}">
+                личный кабинет
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</header>
