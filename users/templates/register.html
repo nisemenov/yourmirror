@@ -1,28 +1,37 @@
-{% extends "base.html" %}
-{% block title %}Регистрация{% endblock %}
+{% extends "base.html" %} {% block title %}Регистрация{% endblock %} {% block
+content %}
+<section class="flex justify-center items-center">
+  <div class="w-full max-w-xl pt-[120px] uppercase">
+    <div class="flex mb-8 text-sm">
+      <a
+        href="{% url 'login' %}"
+        class="text-sm text-gray-500 hover:text-gray-800"
+        >авторизация</a
+      >
+      <p class="ml-4 text-gray-800 underline cursor-default">регистрация</p>
+    </div>
 
-{% block content %}
-<div class="flex items-center justify-center min-h-[80vh]">
-  <div class="bg-white shadow-md rounded-2xl p-8 w-full max-w-md border border-gray-200">
-    <h2 class="text-2xl font-semibold mb-6 text-center">Регистрация</h2>
-    <form method="post" novalidate>
-      {% csrf_token %}
-      {{ form.non_field_errors }}
-      <div class="space-y-4">
-        {% for field in form %}
-          <div>
-            {{ field.label_tag }}
-            {{ field }}
-            {% if field.errors %}
-              <p class="text-red-500 text-sm mt-1">{{ field.errors.0 }}</p>
-            {% endif %}
-          </div>
-        {% endfor %}
+    <h2 class="text-2xl mb-8">Регистрация</h2>
+
+    <form method="post" class="space-y-8 text-xs text-gray-800">
+      {% csrf_token %} {% for field in form %}
+      <div class="block">
+        {{ field.label_tag }} {{ field }} {% if field.errors %}
+        <p class="text-red-500 text-sm mt-1">{{ field.errors.0 }}</p>
+        {% endif %}
       </div>
-      <button type="submit" class="w-full mt-6 bg-black text-white py-3 rounded-lg hover:bg-gray-800 transition">
-        Зарегистрироваться
-      </button>
+      {% endfor %}
+
+      <div>
+        <button
+          type="submit"
+          class="w-full bg-black text-white py-4 px-4 rounded-none hover:bg-gray-700 focus:outline-none focus:ring-0 uppercase"
+        >
+          Войти
+        </button>
+      </div>
     </form>
   </div>
-</div>
+</section>
+
 {% endblock %}
