@@ -1,17 +1,37 @@
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login
+from django.contrib.auth.views import LoginView
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 
+from users.forms import CustomAuthenticationForm, CustomUserCreationForm
+
+
+class CustomLoginView(LoginView):
+    form_class = CustomAuthenticationForm
+    redirect_authenticated_user = True
+    next_page = "profile"
+
+    def form_valid(self, form):
+        remember_me = form.cleaned_data.get("remember_me")
+        if not remember_me:
+            self.request.session.set_expiry(0)
+        else:
+            self.request.session.set_expiry(1209600)
+        return super().form_valid(form)
+
+
 def register(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+    if request.method == "POST":
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('login')
+            user = form.save()
+            login(request, user)
+            return redirect("profile")
     else:
-        form = UserCreationForm()
-    return render(request, 'register.html', {'form': form})
+        form = CustomUserCreationForm()
+    return render(request, "register.html", {"form": form})
+
 
 @login_required
 def profile(request):
-    return render(request, 'profile.html')
+    return render(request, "profile.html")

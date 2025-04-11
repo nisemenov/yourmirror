@@ -44,7 +44,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "telewish.urls"
 
-TEMPLATES_DIR = BASE_DIR / 'templates'
+TEMPLATES_DIR = BASE_DIR / "templates"
 
 TEMPLATES = [
     {
@@ -95,7 +95,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # Internationalization
-LANGUAGE_CODE = 'ru-RU'
+LANGUAGE_CODE = "ru-RU"
 
 TIME_ZONE = "UTC"
 
@@ -105,13 +105,13 @@ USE_TZ = True
 
 
 STATIC_URL = "static/"
-STATIC_ROOT = BASE_DIR / 'static'
+STATIC_ROOT = BASE_DIR / "static"
 
-MEDIA_URL = 'media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = "media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
-LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = 'profile'
+# LOGIN_URL = 'login'
+# LOGIN_REDIRECT_URL = 'profile'
 # LOGOUT_REDIRECT_URL = 'home'
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
