@@ -3,11 +3,10 @@ from django.contrib.auth.views import LoginView
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 
-from users.forms import CustomAuthenticationForm, CustomUserCreationForm
+from users.forms import EmailRegistrationForm
 
 
 class CustomLoginView(LoginView):
-    form_class = CustomAuthenticationForm
     redirect_authenticated_user = True
     next_page = "profile"
 
@@ -22,13 +21,13 @@ class CustomLoginView(LoginView):
 
 def register(request):
     if request.method == "POST":
-        form = CustomUserCreationForm(request.POST)
+        form = EmailRegistrationForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
             return redirect("profile")
     else:
-        form = CustomUserCreationForm()
+        form = EmailRegistrationForm()
     return render(request, "register.html", {"form": form})
 
 

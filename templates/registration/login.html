@@ -1,46 +1,53 @@
-{% extends "base.html" %} {% block title %}Авторизация{% endblock %} {% block
-content %}
+{% extends "base.html" %}
+
+{% block title %}Авторизация{% endblock %}
+
+{% block content %}
 <section class="flex justify-center items-center">
-  <div class="w-full max-w-xl pt-[120px] uppercase">
-    <div class="flex mb-8 text-sm">
-      <p class="text-gray-800 underline cursor-default">авторизация</p>
-      <a
-        href="{% url 'register' %}"
-        class="ml-4 text-sm text-gray-500 hover:text-gray-800"
-        >регистрация</a
-      >
-    </div>
-
-    <h2 class="text-2xl mb-8">Вход в кабинет</h2>
-
-    <form method="post" class="space-y-8 text-xs text-gray-800">
-      {% csrf_token %} {% for field in form %} {% if field.name != "remember_me"
-      %} {{ field.label_tag }} {{ field }} {% endif %} {% if field.errors %}
-      <p class="text-red-500 text-sm mt-1">{{ field.errors.0 }}</p>
-      {% endif %} {% endfor %}
-
-      <div class="flex items-center justify-between">
-        <div class="flex items-center">
-          <input
-            type="checkbox"
-            id="remember_me"
-            name="remember_me"
-            class="h-4 w-4 focus:ring-0 border-gray-300 rounded"
-          />
-          <label for="remember_me" class="ml-2 uppercase">Запомнить меня</label>
+    <div class="w-full max-w-2xl pt-[120px] uppercase">
+        <div class="flex mb-8">
+            <p class="text-gray-800 underline cursor-default">авторизация</p>
+            <a href="{% url 'register' %}" class="ml-4 text-gray-500 hover:text-gray-800">регистрация</a>
         </div>
-        <a href="#" class="hover:text-gray-500">Забыли пароль?</a>
-      </div>
 
-      <div>
-        <button
-          type="submit"
-          class="w-full bg-black text-white py-4 px-4 rounded-none hover:bg-gray-700 focus:outline-none focus:ring-0 uppercase"
-        >
-          Войти
-        </button>
-      </div>
-    </form>
-  </div>
+        <h2 class="text-2xl mb-8">Вход в кабинет</h2>
+
+        <form method="post" class="space-y-8 text-gray-800">
+            {% csrf_token %}
+            <div class="block">
+                <label for="id_username">email</label>
+                <div class="mt-2">
+                    <input type="email" name="username" id="id_username" class="w-full border-b-1 border-black outline-none py-3 caret-black focus:caret-black" required>
+                </div>
+                {% if form.username.errors %}
+                    <p class="text-red-500 text-sm mt-1">{{ form.username.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div class="block">
+                <label for="id_password">Пароль</label>
+                <div class="mt-2">
+                    <input type="password" name="password" id="id_password" class="w-full border-b-1 border-black outline-none py-3 caret-black focus:caret-black" required>
+                </div>
+                {% if form.password.errors %}
+                    <p class="text-red-500 text-sm mt-1">{{ form.password.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <input type="checkbox" id="remember_me" name="remember_me" class="h-4 w-4 focus:ring-0 border-gray-300 rounded">
+                    <label for="remember_me" class="ml-2 uppercase">Запомнить меня</label>
+                </div>
+                <a href="{% url 'password_reset' %}" class="hover:text-gray-500">Забыли пароль?</a>
+            </div>
+
+            <div>
+                <button type="submit" class="w-full bg-black text-white py-4 px-4 rounded-none hover:bg-gray-700 focus:outline-none focus:ring-0 uppercase">
+                    Войти
+                </button>
+            </div>
+        </form>
+    </div>
 </section>
 {% endblock %}
