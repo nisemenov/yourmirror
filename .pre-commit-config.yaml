@@ -1,0 +1,60 @@
+default_language_version:
+  python: "3.13"
+repos:
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v4.0.0
+    hooks:
+      - id: conventional-pre-commit
+        stages: [commit-msg]
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-case-conflict
+      - id: check-merge-conflict
+      - id: check-toml
+      - id: debug-statements
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.9.9
+    hooks:
+      - id: ruff
+        args: ["--fix", "--config", "./pyproject.toml"]
+      - id: ruff-format
+        args: ["--config", "./pyproject.toml"]
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.4.1
+    hooks:
+      - id: codespell
+        args: ["--toml", "./pyproject.toml"]
+  # - repo: https://github.com/pre-commit/mirrors-mypy
+  #   rev: "v1.15.0"
+  #   hooks:
+  #     - id: mypy
+  #       additional_dependencies:
+  #         [
+  #           "alembic>=1.14.1",
+  #           "asyncpg>=0.30.0",
+  #           "ldap3>=2.9.1",
+  #           "litestar[jwt,redis,sqlalchemy,standard]>=2.14.0",
+  #           "minio>=7.2.15",
+  #           "passlib>=1.7.4",
+  #           "psycopg2-binary>=2.9.10",
+  #           "pydantic>=2.10.6",
+  #           "pydantic-settings>=2.7.1",
+  #           "python-dotenv>=1.0.1",
+  #           "questionary>=2.1.0",
+  #           "s3fs>=2025.2.0",
+  #           "sqladmin-litestar-plugin>=0.2.0",
+  #           "sqlalchemy-utils>=0.41.2",
+  #           "sqlalchemy[asyncio]>=2.0.38",
+  #           "pytest",
+  #           "faststream[cli]>=0.5.34",
+  #         ]
+  #       args: ["--config-file", "./backend/pyproject.toml"]
+  - repo: https://github.com/pycontribs/mirrors-prettier
+    rev: "v3.5.3"
+    hooks:
+      - id: prettier
+        args: ["--end-of-line", "auto"]

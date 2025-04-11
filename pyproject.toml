@@ -13,7 +13,7 @@ dependencies = [
 ]
 
 [tool.uv]
-default-groups = ["dev", "test"]
+default-groups = ["dev", "test", "lint"]
 
 [dependency-groups]
 test = [
@@ -23,6 +23,9 @@ test = [
 dev = [
     "cookiecutter>=2.6.0",
     "django-tailwind[reload]>=4.0.1",
+]
+lint = [
+    "pre-commit>=4.2.0",
 ]
 
 [tool.mypy]
