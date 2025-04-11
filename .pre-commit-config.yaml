@@ -53,8 +53,8 @@ repos:
   #           "faststream[cli]>=0.5.34",
   #         ]
   #       args: ["--config-file", "./backend/pyproject.toml"]
-  - repo: https://github.com/pycontribs/mirrors-prettier
-    rev: "v3.5.3"
-    hooks:
-      - id: prettier
-        args: ["--end-of-line", "auto"]
+  # - repo: https://github.com/pycontribs/mirrors-prettier
+  #   rev: "v3.5.3"
+  #   hooks:
+  #     - id: prettier
+  #       args: ["--end-of-line", "auto"]
