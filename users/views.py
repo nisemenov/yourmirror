@@ -34,3 +34,13 @@ def register(request):
 @login_required
 def profile(request):
     return render(request, "profile.html")
+
+
+@login_required
+def following(request):
+    return render(request, "following.html")
+
+
+@login_required
+def settings(request):
+    return render(request, "settings.html")
