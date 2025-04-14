@@ -1,4 +1,42 @@
-<header class="flex flex-row justify-between items-center py-4 px-6 uppercase">
-  <a href="/">главная</a>
-  <a href="{% url 'login' %}">личный кабинет</a>
-</header>
+{% load active_url %}
+
+<div class="fixed top-0 flex flex-col w-full uppercase">
+    <div class="flex flex-row px-2 pt-4 justify-between items-center">
+        <a href="/" class="w-[6.5rem] text-right {% is_active_url "home" %}">главная</a>
+        <div class="w-[8rem] text-left">
+            {% if user.is_authenticated %}
+                <a href="{% url "profile" %}" class="{% is_active_url "profile" %}">профиль</a>
+            {% else %}
+                <a href="{% url "login" %}" class="{% is_active_url "login" %}">вход</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <nav class="fixed flex flex-col pr-2 pb-20 top-16 right-0 h-full">
+        <div class="flex flex-col justify-between w-[8rem] h-full">
+            <div>
+                <ul class="space-y-2">
+                    {% if user.is_authenticated %}
+                        <li><a href="{% url "following" %}" class="{% is_active_url "following" %}">подписки</a></li>
+                        <li><a href="{% url "settings" %}" class="{% is_active_url "settings" %}">настройки</a></li>
+                    {% endif %}
+                </ul>
+                {% if user.is_authenticated %}
+                    <form method="post" action="{% url "logout" %}">
+                        {% csrf_token %}
+                        <button type="submit" class="mt-2 text-gray-500 uppercase cursor-pointer hover:text-black" aria-label="Выйти">Выйти</button>
+                    </form>
+                {% endif %}
+            </div>
+
+            <ul class="space-y-2">
+                <li>
+                    <a href="{% url "contacts" %}" class="{% is_active_url "contacts" %}">контакты</a>
+                </li>
+                <li>
+                    <a href="{% url "about" %}" class="{% is_active_url "about" %}">о проекте</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
