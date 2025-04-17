@@ -1,18 +1,19 @@
+import environ
 import os
 from pathlib import Path
-from dotenv import load_dotenv
 
-load_dotenv()
+
+env = environ.Env(DEBUG=(bool, False))
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv("SECRET_KEY")
+environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
-DEBUG = True
+DEBUG = env("DEBUG")
 
-ALLOWED_HOSTS = [
-    "*",
-]
+SECRET_KEY = env("SECRET_KEY")
+
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 
 
 INSTALLED_APPS = [
@@ -27,7 +28,8 @@ INSTALLED_APPS = [
     "tailwind",
     "django_browser_reload",
     "theme",
-    "users.apps.UsersConfig",
+    "minio_storage",
+    "profiles.apps.ProfilesConfig",
     "wishitems.apps.WishitemsConfig",
 ]
 
@@ -70,11 +72,11 @@ WSGI_APPLICATION = "telewish.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": "telewish",
-        "USER": "postgres",
-        "PASSWORD": "postgres",
-        "HOST": "localhost",
-        "PORT": 5432,
+        "NAME": env("DB_NAME"),
+        "USER": env("DB_USER"),
+        "PASSWORD": env("DB_PASSWORD"),
+        "HOST": env("DB_HOST"),
+        "PORT": env("DB_PORT"),
     }
 }
 
@@ -95,8 +97,35 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# MinIO базовые параметры
+MINIO_STORAGE_ENDPOINT = f"{env('MINIO_HOST')}:{env('MINIO_PORT')}"
+MINIO_STORAGE_ACCESS_KEY = env("MINIO_ROOT_USER")
+MINIO_STORAGE_SECRET_KEY = env("MINIO_ROOT_PASSWORD")
+MINIO_STORAGE_USE_HTTPS = env.bool("MINIO_SECURE", default=False)
 
-# Internationalization
+# Бакеты
+MINIO_STORAGE_MEDIA_BUCKET_NAME = "media"
+MINIO_STORAGE_STATIC_BUCKET_NAME = "static"
+MINIO_STORAGE_AUTO_CREATE_MEDIA_BUCKET = True
+MINIO_STORAGE_AUTO_CREATE_MEDIA_POLICY = "READ_WRITE"
+
+STORAGES = {
+    "default": {
+        "BACKEND": "minio_storage.storage.MinioMediaStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
+
+# URLs
+STATIC_URL = "static/"
+STATIC_ROOT = BASE_DIR / "static"
+
+MEDIA_URL = "media/"
+MEDIA_ROOT = BASE_DIR / "media"
+
+
 LANGUAGE_CODE = "ru-RU"
 
 TIME_ZONE = "UTC"
@@ -105,16 +134,7 @@ USE_I18N = True
 
 USE_TZ = True
 
-
-STATIC_URL = "static/"
-STATIC_ROOT = BASE_DIR / "static"
-
-MEDIA_URL = "media/"
-MEDIA_ROOT = BASE_DIR / "media"
-
-# LOGIN_URL = 'login'
-# LOGIN_REDIRECT_URL = 'profile'
-# LOGOUT_REDIRECT_URL = 'home'
+LOGIN_URL = "login"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
