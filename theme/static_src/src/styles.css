@@ -1,7 +1,8 @@
 @import "tailwindcss";
 
 @source "../../../templates/**/*.{html}";
-@source "../../../users/templates/**/*.{html}";
+@source "../../../profiles/templates/**/*.{html}";
+@source "../../../wishitems/templates/**/*.{html}";
 
 html {
   font-style: normal;
