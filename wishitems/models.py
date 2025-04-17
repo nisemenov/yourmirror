@@ -5,21 +5,23 @@ from django.db import models
 User = get_user_model()
 
 
-def get_picture_path(instance, filename):
-    return "app_data/profiles/user_{0}/{1}"
+def upload_to_wishlist(instance, filename):
+    ext = filename.split(".")[-1]
+    return f"wishitems/picture/{uuid.uuid4()}.{ext}"
 
 
-class WishItem(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, unique=True)
-
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="wishitems")
-
-    link = models.URLField(blank=True)
+class WishItemModel(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
-    picture = models.ImageField(upload_to=get_picture_path, blank=True)
+    link = models.URLField(blank=True)
+    picture = models.ImageField(upload_to=upload_to_wishlist, blank=True, null=True)
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="wishitems")
 
     is_private = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"<WishItemModel {self.pk} / {self.title}>"

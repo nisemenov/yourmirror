@@ -1,5 +1,5 @@
 from django.contrib import admin
 
-from wishitems.models import WishItem
+from wishitems.models import WishItemModel
 
-admin.site.register(WishItem)
+admin.site.register(WishItemModel)
