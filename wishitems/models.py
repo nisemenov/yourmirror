@@ -1,8 +1,8 @@
 import uuid
-from django.contrib.auth import get_user_model
-from django.db import models
 
-User = get_user_model()
+from django.utils.text import slugify
+from django.contrib.auth.models import User
+from django.db import models
 
 
 def upload_to_wishlist(instance, filename):
@@ -16,6 +16,8 @@ class WishItemModel(models.Model):
     link = models.URLField(blank=True)
     picture = models.ImageField(upload_to=upload_to_wishlist, blank=True, null=True)
 
+    slug = models.SlugField(blank=True)
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="wishitems")
 
     is_private = models.BooleanField(default=False)
@@ -25,3 +27,14 @@ class WishItemModel(models.Model):
 
     def __str__(self):
         return f"<WishItemModel {self.pk} / {self.title}>"
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base_slug = slugify(self.title)
+            slug = base_slug
+            num = 1
+            while WishItemModel.objects.filter(slug=slug).exists():
+                slug = f"{base_slug}-{num}"
+                num += 1
+            self.slug = slug
+        super().save(*args, **kwargs)
