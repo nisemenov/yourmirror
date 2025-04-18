@@ -1,26 +1,61 @@
-from django.contrib.auth.views import login_required
-from django.shortcuts import get_object_or_404, redirect, render
+from django.views.generic import (
+    ListView,
+    DetailView,
+    CreateView,
+    UpdateView,
+    DeleteView,
+)
+from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
-from wishitems.models import WishItemModel
-
+from .models import WishItemModel
 from .forms import WishItemForm
 
 
-@login_required
-def wishlist(request):
-    if request.method == "POST":
-        form = WishItemForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save(user=request.user)
-            return redirect("wishlist")
-    else:
-        form = WishItemForm()
+class WishItemListView(LoginRequiredMixin, ListView):
+    model = WishItemModel
+    template_name = "wishlist.html"
+    context_object_name = "wishitems"
 
-    wishitems = request.user.wishitems.all()
-    return render(request, "wishlist.html", {"wishitems": wishitems, "form": form})
+    def get_queryset(self):
+        return self.request.user.wishitems.all()
 
 
-@login_required
-def wishlist_retriev(request, wishitem_id):
-    wishitem = get_object_or_404(WishItemModel, pk=wishitem_id)
-    return render(request, "wishlist_retrieve.html", {"wishitem": wishitem})
+class WishItemDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
+    model = WishItemModel
+    template_name = "wishitem_detail.html"
+    context_object_name = "wishitem"
+
+    def test_func(self):
+        wishitem = self.get_object()
+        return not wishitem.is_private or wishitem.user == self.request.user
+
+
+class WishItemCreateView(LoginRequiredMixin, CreateView):
+    model = WishItemModel
+    form_class = WishItemForm
+    template_name = "wishitem_form.html"
+    success_url = reverse_lazy("wishlist")
+
+    def form_valid(self, form):
+        self.object = form.save(user=self.request.user)
+        return super().form_valid(form)
+
+
+class WishItemUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = WishItemModel
+    form_class = WishItemForm
+    template_name = "wishitem_form.html"
+    success_url = reverse_lazy("wishlist")
+
+    def test_func(self):
+        return self.get_object().user == self.request.user
+
+
+class WishItemDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = WishItemModel
+    template_name = "wishitem_delete.html"
+    success_url = reverse_lazy("wishlist")
+
+    def test_func(self):
+        return self.get_object().user == self.request.user

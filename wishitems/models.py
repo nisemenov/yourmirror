@@ -1,5 +1,6 @@
 import uuid
 
+from django.urls import reverse
 from django.utils.text import slugify
 from django.contrib.auth.models import User
 from django.db import models
@@ -26,7 +27,7 @@ class WishItemModel(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"<WishItemModel {self.pk} / {self.title}>"
+        return f"<WishItemModel {self.slug}>"
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -38,3 +39,6 @@ class WishItemModel(models.Model):
                 num += 1
             self.slug = slug
         super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse("wish_detail", kwargs={"slug": self.slug})

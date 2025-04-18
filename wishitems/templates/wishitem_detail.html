@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}{{ wishitem.title }}{% endblock %}
+
+{% block content %}
+<div class="py-6 px-6 max-w-3xl mx-auto space-y-6">
+    {% if wishitem.picture %}
+        <img src="{{ wishitem.picture.url }}" alt="{{ wishitem.title }}" class="w-full rounded-2xl object-cover h-64">
+    {% endif %}
+
+    <div>
+        <h1 class="text-2xl font-bold">{{ wishitem.title }}</h1>
+        {% if wishitem.description %}
+            <p class="mt-2 text-gray-700">{{ wishitem.description }}</p>
+        {% endif %}
+        {% if wishitem.link %}
+            <p class="mt-2"><a href="{{ wishitem.link }}" class="text-blue-500 underline" target="_blank">Перейти по ссылке</a></p>
+        {% endif %}
+    </div>
+
+    <div class="flex gap-4">
+        <a href="{% url 'wishitem_update' wishitem.slug %}" class="text-sm text-gray-600 hover:text-black underline">Редактировать</a>
+        <a href="{% url 'wishitem_delete' wishitem.slug %}" class="text-sm text-red-500 hover:text-black underline">Удалить</a>
+    </div>
+</div>
+{% endblock %}
