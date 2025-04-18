@@ -637,6 +637,7 @@ dependencies = [
     { name = "pillow" },
     { name = "psycopg2-binary" },
     { name = "python-dotenv" },
+    { name = "python-slugify" },
 ]
 
 [package.dev-dependencies]
@@ -661,6 +662,7 @@ requires-dist = [
     { name = "pillow", specifier = ">=11.1.0" },
     { name = "psycopg2-binary", specifier = ">=2.9.10" },
     { name = "python-dotenv", specifier = ">=1.0.1" },
+    { name = "python-slugify", specifier = ">=8.0.4" },
 ]
 
 [package.metadata.requires-dev]
