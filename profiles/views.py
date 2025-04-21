@@ -52,8 +52,8 @@ class FollowItemCreateView(LoginRequiredMixin, ListView):
             return redirect("wishlist_me")
 
         follow_obj, created = FollowModel.objects.get_or_create(
-            user=me,
-            following=target_profile.user,
+            follower=me.profile,
+            following=target_profile,
         )
 
         if not created:

@@ -5,48 +5,34 @@
 
 {% block content %}
 <div class="py-4 px-6">
-    {% if wishitems.exists %}
-        {% if not is_owner %}
-            <div class="flex justify-between items-center py-4">
-                <p class="uppercase">
-                    Это вишлист {{ owner.last_name }} {{ owner.first_name }}.
-                </p>
-            </div>
 
-            <form method="post" action="{% url 'follow_create' owner.profile.id %}">
-    {% csrf_token %}
-    <button class="border px-4 py-2 rounded-xl">
-      {% if is_following %}Отписаться{% else %}Подписаться{% endif %}
-    </button>
-  </form>
+    {% if not is_owner %}
+        <div class="flex justify-between items-center py-4">
+            <p class="uppercase">
+                Это вишлист {{ owner.user.last_name }} {{ owner.user.first_name }}.
+            </p>
+        </div>
 
-        {% endif %}
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {% for item in wishitems %}
-            <a href="{% url "wishitem_detail" item.slug %}" class="flex flex-col w-full border border-gray-200  overflow-hidden">
-                {% if item.picture %}
-                    <div>
-                        <img src="{{ item.picture.url }}" alt="picture" class="w-full h-48 object-cover">
-                    </div>
-                {% endif %}
-                <div class="p-4">
-                    <h3 class="text-lg font-semibold">{{ item.title }}</h3>
-                    {% if item.description %}
-                        <p class="text-sm mt-1">{{ item.description }}</p>
-                    {% endif %}
-                </div>
-            </a>
-        {% endfor %}
+        <form method="post" action="{% url 'follow_create' owner.id %}">
+            {% csrf_token %}
+            <button class="border px-4 py-2 rounded-xl">
+                {% if is_following %}Отписаться{% else %}Подписаться{% endif %}
+            </button>
+        </form>
+    {% endif %}
 
-        {% include "wishlist_button.html" %}
-    </div>
-    {% else %}
+    {% if not wishitems.exists %}
         <div class="text-center py-12">
-            <p class="text-lg text-gray-600 py-6">Кажется, ваш вишлист пуст, но это легко исправить.</p>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {% include "wishlist_button.html" %}
-            </div>
+            <p class="text-lg text-gray-600 py-6">Этот вишлист пока пуст.</p>
         </div>
     {% endif %}
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% include "wishlist_items.html" %}
+        {% if is_owner %}
+            {% include "wishlist_button.html" %}
+        {% endif %}
+    </div>
+
 </div>
 {% endblock %}

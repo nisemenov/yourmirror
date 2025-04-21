@@ -1,10 +1,11 @@
 import uuid
 
 from django.urls import reverse
-from django.contrib.auth.models import User
 from django.db import models
 
 from slugify import slugify
+
+from profiles.models import ProfileModel
 
 
 def upload_to_wishlist(instance, filename):
@@ -19,9 +20,15 @@ class WishItemModel(models.Model):
     picture = models.ImageField(upload_to=upload_to_wishlist, blank=True, null=True)
     slug = models.SlugField(blank=True)
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="wishitems")
+    profile = models.ForeignKey(
+        ProfileModel,
+        on_delete=models.CASCADE,
+        related_name="wishitems",
+    )
 
-    reserved = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
+    reserved = models.ForeignKey(
+        ProfileModel, on_delete=models.SET_NULL, blank=True, null=True
+    )
     reserved_at = models.DateTimeField(auto_now=True)
 
     is_private = models.BooleanField(default=False)

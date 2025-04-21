@@ -6,9 +6,9 @@
 {% block content %}
     {% if profiles.exists %}
         {% for profile in profiles %}
-        <p>{{ profile.user.last_name }} {{ profile.user.first_name }}</p>
+        <a href="{% url "wishlist" profile.id %}">{{ profile.user.last_name }} {{ profile.user.first_name }}</a>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {% for item in profile.wishitems %}
+        {% for item in profile.wishitems.all %}
             <a href="{% url "wishlist" profile.id %}" class="flex flex-col w-full border border-gray-200  overflow-hidden">
                 {% if item.picture %}
                     <div>

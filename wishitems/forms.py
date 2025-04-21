@@ -25,10 +25,10 @@ class WishItemForm(forms.ModelForm):
             "is_private": forms.CheckboxInput(attrs={"class": "mr-2"}),
         }
 
-    def save(self, commit=True, user=None):
+    def save(self, commit=True, profile=None):
         instance = super().save(commit=False)
-        if user:
-            instance.user = user
+        if profile:
+            instance.profile = profile
         if commit:
             instance.save()
         return instance

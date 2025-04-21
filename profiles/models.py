@@ -17,43 +17,41 @@ class ProfileModel(models.Model):
 
     @property
     def followers(self):
-        return ProfileModel.objects.filter(user__following__following=self.user)
+        return ProfileModel.objects.filter(follower_profiles__following=self)
 
     @property
     def following(self):
-        return ProfileModel.objects.filter(user__follower__user=self.user)
+        return ProfileModel.objects.filter(following_profiles__follower=self)
 
-    def is_following(self, other_user):
-        return FollowModel.objects.filter(user=self.user, following=other_user).exists()
-
-    @property
-    def wishitems(self):
-        return self.user.wishitems.all()
+    def is_following(self, other_profile):
+        return FollowModel.objects.filter(
+            follower=self, following=other_profile
+        ).exists()
 
     def __str__(self):
         return f"<ProfileModel {self.user}>"
 
 
 class FollowModel(models.Model):
-    user = models.ForeignKey(
-        User,
+    follower = models.ForeignKey(
+        ProfileModel,
         on_delete=models.CASCADE,
-        related_name="following",
+        related_name="follower_profiles",
     )
     following = models.ForeignKey(
-        User,
+        ProfileModel,
         on_delete=models.CASCADE,
-        related_name="follower",
+        related_name="following_profiles",
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = ["user", "following"]
+        unique_together = ["follower", "following"]
 
     def __str__(self):
-        return f"<FollowModel {self.user.username} → {self.following.username}>"
+        return f"<FollowModel {self.profile.user.username} → {self.following.user.username}>"
 
 
 @staticmethod
