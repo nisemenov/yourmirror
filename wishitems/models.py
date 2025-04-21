@@ -21,18 +21,13 @@ class WishItemModel(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="wishitems")
 
-    reserved = models.OneToOneField(
-        User, on_delete=models.SET_NULL, blank=True, null=True
-    )
+    reserved = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
     reserved_at = models.DateTimeField(auto_now=True)
 
     is_private = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return f"<WishItemModel {self.slug}>"
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -47,3 +42,9 @@ class WishItemModel(models.Model):
 
     def get_absolute_url(self):
         return reverse("wish_detail", kwargs={"slug": self.slug})
+
+    class Meta:
+        ordering = ["title"]
+
+    def __str__(self):
+        return f"<WishItemModel {self.slug}>"
