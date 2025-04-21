@@ -1,26 +1,60 @@
 {% extends "base.html" %}
-
 {% block title %}{{ wishitem.title }}{% endblock %}
 
 {% block content %}
-<div class="py-6 px-6 max-w-3xl mx-auto space-y-6">
-    {% if wishitem.picture %}
-        <img src="{{ wishitem.picture.url }}" alt="{{ wishitem.title }}" class="w-full rounded-2xl object-cover h-64">
-    {% endif %}
+<div class="py-6 px-6 max-w-4xl mx-auto space-y-6">
 
-    <div>
-        <h1 class="text-2xl font-bold">{{ wishitem.title }}</h1>
-        {% if wishitem.description %}
-            <p class="mt-2 text-gray-700">{{ wishitem.description }}</p>
+    <div class="flex gap-6">
+        {% if wishitem.picture %}
+            <img src="{{ wishitem.picture.url }}" alt="{{ wishitem.title }}"
+                 class="w-64 h-auto object-contain border border-gray-200">
         {% endif %}
-        {% if wishitem.link %}
-            <p class="mt-2"><a href="{{ wishitem.link }}" class="text-blue-500 underline" target="_blank">Перейти по ссылке</a></p>
-        {% endif %}
-    </div>
 
-    <div class="flex gap-4">
-        <a href="{% url 'wishitem_update' wishitem.slug %}" class="text-sm text-gray-600 hover:text-black underline">Редактировать</a>
-        <a href="{% url 'wishitem_delete' wishitem.slug %}" class="text-sm text-red-500 hover:text-black underline">Удалить</a>
+        <div class="flex flex-col justify-between flex-1">
+            <div>
+                <h1 class="text-2xl font-bold">{{ wishitem.title }}</h1>
+
+                {% if wishitem.description %}
+                    <p class="mt-2 text-gray-700">{{ wishitem.description }}</p>
+                {% endif %}
+
+                {% if wishitem.link %}
+                    <p class="mt-2">
+                        <a href="{{ wishitem.link }}" class="text-blue-500 underline" target="_blank">
+                            Перейти по ссылке
+                        </a>
+                    </p>
+                {% endif %}
+            </div>
+
+            {% if wishitem.reserved %}
+                <button disabled class="px-4 py-2 bg-gray-300 text-white rounded-xl cursor-not-allowed">
+                    Зарезервировано
+                </button>
+            {% endif %}
+
+            {% if wishitem.user != request.user %}
+                <form method="post" class="mt-4">
+                    {% csrf_token %}
+                    {% if wishitem.reserved == request.user %}
+                        <button type="submit" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-xl">
+                            Отменить бронь
+                        </button>
+                    {% else %}
+                        <button type="submit" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl">
+                            Зарезервировать
+                        </button>
+                    {% endif %}
+                </form>
+            {% endif %}
+
+            {% if wishitem.user == request.user %}
+                <div class="flex gap-4 mt-4">
+                    <a href="{% url 'wishitem_update' wishitem.slug %}" class="text-sm text-gray-600 hover:text-black underline">Редактировать</a>
+                    <a href="{% url 'wishitem_delete' wishitem.slug %}" class="text-sm text-red-500 hover:text-black underline">Удалить</a>
+                </div>
+            {% endif %}
+        </div>
     </div>
 </div>
 {% endblock %}
