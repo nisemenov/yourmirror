@@ -15,6 +15,21 @@ class ProfileModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    @property
+    def followers(self):
+        return ProfileModel.objects.filter(user__following__following=self.user)
+
+    @property
+    def following(self):
+        return ProfileModel.objects.filter(user__follower__user=self.user)
+
+    def is_following(self, other_user):
+        return FollowModel.objects.filter(user=self.user, following=other_user).exists()
+
+    @property
+    def wishitems(self):
+        return self.user.wishitems.all()
+
     def __str__(self):
         return f"<ProfileModel {self.user}>"
 
@@ -23,12 +38,12 @@ class FollowModel(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name="follower",
+        related_name="following",
     )
     following = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name="following",
+        related_name="follower",
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -38,7 +53,7 @@ class FollowModel(models.Model):
         unique_together = ["user", "following"]
 
     def __str__(self):
-        return f"<FollowModel {self.pk}>"
+        return f"<FollowModel {self.user.username} → {self.following.username}>"
 
 
 @staticmethod

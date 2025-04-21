@@ -1,7 +1,11 @@
 from django.contrib.auth import login
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
+from django.views.generic import ListView
+
+from profiles.models import FollowModel, ProfileModel
 
 from .forms import EmailRegistrationForm
 
@@ -28,12 +32,34 @@ def register(request):
             return redirect("wishlist")
     else:
         form = EmailRegistrationForm()
-    return render(request, "register.html", {"form": form})
+    return render(request, "registration/register.html", {"form": form})
 
 
-@login_required
-def following(request):
-    return render(request, "following.html")
+class FollowingView(LoginRequiredMixin, ListView):
+    template_name = "following.html"
+    context_object_name = "profiles"
+
+    def get_queryset(self):
+        return self.request.user.profile.following
+
+
+class FollowItemCreateView(LoginRequiredMixin, ListView):
+    def post(self, request, profile_id):
+        target_profile = get_object_or_404(ProfileModel, id=profile_id)
+        me = request.user
+
+        if target_profile.user == me:
+            return redirect("wishlist_me")
+
+        follow_obj, created = FollowModel.objects.get_or_create(
+            user=me,
+            following=target_profile.user,
+        )
+
+        if not created:
+            follow_obj.delete()
+
+        return redirect(request.META.get("HTTP_REFERER", "/"))
 
 
 @login_required

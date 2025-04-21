@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Подписки{% endblock %}
+
+{% block content %}
+    {% if profiles.exists %}
+        {% for profile in profiles %}
+        <p>{{ profile.user.last_name }} {{ profile.user.first_name }}</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for item in profile.wishitems %}
+            <a href="{% url "wishlist" profile.id %}" class="flex flex-col w-full border border-gray-200  overflow-hidden">
+                {% if item.picture %}
+                    <div>
+                        <img src="{{ item.picture.url }}" alt="picture" class="w-full h-48 object-cover">
+                    </div>
+                {% endif %}
+            </a>
+        {% endfor %}
+                </div>
+        {% endfor %}
+    {% else %}
+    <p>Пока что вы не подписались ни на один вишлист.</p>
+
+        {% endif %}
+
+{% endblock %}
