@@ -17,10 +17,14 @@ class WishItemModel(models.Model):
     description = models.TextField(blank=True)
     link = models.URLField(blank=True)
     picture = models.ImageField(upload_to=upload_to_wishlist, blank=True, null=True)
-
     slug = models.SlugField(blank=True)
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="wishitems")
+
+    reserved = models.OneToOneField(
+        User, on_delete=models.SET_NULL, blank=True, null=True
+    )
+    reserved_at = models.DateTimeField(auto_now=True)
 
     is_private = models.BooleanField(default=False)
 
