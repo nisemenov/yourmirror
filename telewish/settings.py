@@ -13,10 +13,14 @@ DEBUG = env("DEBUG")
 
 SECRET_KEY = env("SECRET_KEY")
 
-ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
+ALLOWED_HOSTS = [
+    "*",
+    "127.0.0.1",
+    "localhost",
+]
 
 # for login
-LOGIN_REMEMBER_ME = env("LOGIN_REMEMBER_ME")
+LOGIN_REMEMBER_ME = env("LOGIN_REMEMBER_ME", default=0)
 
 
 INSTALLED_APPS = [

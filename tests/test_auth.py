@@ -3,6 +3,7 @@ import pytest
 from django.urls import reverse
 
 from profiles.forms import EmailRegistrationForm
+from tests.factories import UserFactory
 from tests.values import VarStr
 
 
@@ -15,18 +16,19 @@ def test_register_view(client, basic_asserts_login):
         "password2": VarStr.USER_PASSWORD2,
     }
     response = client.post(url, data)
-    basic_asserts_login(response, "wishlist")
+    basic_asserts_login(response, "wishlist_me")
 
 
 @pytest.mark.django_db
-def test_login_view(client, user, basic_asserts_login):
+def test_login_view(client, basic_asserts_login):
+    user = UserFactory()
     url = reverse("login")
     data = {
         "username": user.username,
         "password": "testpass123",
     }
     response = client.post(url, data)
-    basic_asserts_login(response, "wishlist")
+    basic_asserts_login(response, "wishlist_me")
 
 
 @pytest.mark.django_db

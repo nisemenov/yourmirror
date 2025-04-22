@@ -1,0 +1,121 @@
+name: Tests And Linting
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install Pre-Commit
+        run: python -m pip install pre-commit && pre-commit install
+
+      - name: Load cached Pre-Commit Dependencies
+        id: cached-pre-commit-dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pre-commit/
+          key: pre-commit|${{ env.pythonLocation }}|${{ hashFiles('.pre-commit-config.yaml') }}
+
+      - name: Execute Pre-Commit
+        run: pre-commit run --show-diff-on-failure --color=always --all-files
+
+  test:
+    runs-on: ubuntu-latest
+    environment: ci
+    strategy:
+      fail-fast: true
+
+    services:
+      postgres:
+        image: postgres:17.0
+        env:
+          POSTGRES_DB: test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "0.5.4"
+          enable-cache: true
+          cache-dependency-glob: |
+            uv.lock
+
+      - name: Sync
+        run: uv sync --all-extras
+
+      - name: Export environment variables
+        run: |
+          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
+          echo "DB_NAME=${{ secrets.DB_NAME }}" >> $GITHUB_ENV
+          echo "DB_USER=${{ secrets.DB_USER }}" >> $GITHUB_ENV
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> $GITHUB_ENV
+          echo "DB_HOST=${{ secrets.DB_HOST }}" >> $GITHUB_ENV
+          echo "DB_PORT=${{ secrets.DB_PORT }}" >> $GITHUB_ENV
+          echo "MINIO_HOST=${{ secrets.MINIO_HOST }}" >> $GITHUB_ENV
+          echo "MINIO_PORT=${{ secrets.MINIO_PORT }}" >> $GITHUB_ENV
+          echo "MINIO_ROOT_USER=${{ secrets.MINIO_ROOT_USER }}" >> $GITHUB_ENV
+          echo "MINIO_ROOT_PASSWORD=${{ secrets.MINIO_ROOT_PASSWORD }}" >> $GITHUB_ENV
+          echo "MINIO_SECURE=${{ secrets.MINIO_SECURE }}" >> $GITHUB_ENV
+
+      - name: Test
+        run: uv run pytest tests
+
+      - name: Test with Coverage
+        run: uv run pytest tests --cov=. --cov-report=xml
+
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-data
+          path: coverage.xml
+
+  upload-test-coverage:
+    runs-on: ubuntu-latest
+    needs:
+      - test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-data
+
+      - name: Fix coverage file name
+        run: sed -i "s/home\/runner\/work\/telewish\/telewish/github\/workspace/g" coverage.xml
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          files: coverage.xml
+          token: ${{ secrets.CODECOV_TOKEN }}

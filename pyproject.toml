@@ -22,6 +22,7 @@ default-groups = ["dev", "test", "lint"]
 test = [
     "factory-boy>=3.3.3",
     "pytest>=8.3.4",
+    "pytest-cov>=6.1.1",
     "pytest-django>=4.10.0",
 ]
 dev = [
