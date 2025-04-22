@@ -16,6 +16,7 @@ makemigrations:
 migrate:
 	python manage.py migrate
 
+
 # LINT
 lint:
 	uv run pre-commit run --all-files

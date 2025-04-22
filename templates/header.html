@@ -5,7 +5,7 @@
         <a href="/" class="w-[6.5rem] text-right {% is_active_url "home" %}">главная</a>
         <div class="w-[8rem] text-left">
             {% if user.is_authenticated %}
-                <a href="{% url "wishlist" %}" class="{% is_active_url "wishlist" %}">Вишлист</a>
+                <a href="{% url "wishlist_me" %}" class="{% is_active_url "wishlist_me" %}">Вишлист</a>
             {% else %}
                 <a href="{% url "login" %}" class="{% is_active_url "login" %}">вход</a>
             {% endif %}

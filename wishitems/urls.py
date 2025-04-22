@@ -9,7 +9,7 @@ from .views import (
 
 
 urlpatterns = [
-    path("wishlist/me/", WishlistView.as_view(), name="wishlist"),
+    path("wishlist/me/", WishlistView.as_view(), name="wishlist_me"),
     path(
         "wishlist/<uuid:profile_id>/",
         WishlistView.as_view(),

@@ -15,6 +15,9 @@ SECRET_KEY = env("SECRET_KEY")
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 
+# for login
+LOGIN_REMEMBER_ME = env("LOGIN_REMEMBER_ME")
+
 
 INSTALLED_APPS = [
     "django.contrib.admin",

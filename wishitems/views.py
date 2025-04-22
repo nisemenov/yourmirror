@@ -77,7 +77,7 @@ class WishItemCreateView(LoginRequiredMixin, CreateView):
     model = WishItemModel
     form_class = WishItemForm
     template_name = "wishitem_form.html"
-    success_url = reverse_lazy("wishlist")
+    success_url = reverse_lazy("wishlist_me")
 
     def form_valid(self, form):
         self.object = form.save(profile=self.request.user.profile)
@@ -88,7 +88,7 @@ class WishItemUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = WishItemModel
     form_class = WishItemForm
     template_name = "wishitem_form.html"
-    success_url = reverse_lazy("wishlist")
+    success_url = reverse_lazy("wishlist_me")
 
     def test_func(self):
         return self.get_object().profile.user == self.request.user
@@ -97,7 +97,7 @@ class WishItemUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 class WishItemDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = WishItemModel
     template_name = "wishitem_delete.html"
-    success_url = reverse_lazy("wishlist")
+    success_url = reverse_lazy("wishlist_me")
 
     def test_func(self):
         return self.get_object().profile.user == self.request.user
