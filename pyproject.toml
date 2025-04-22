@@ -20,6 +20,7 @@ default-groups = ["dev", "test", "lint"]
 
 [dependency-groups]
 test = [
+    "factory-boy>=3.3.3",
     "pytest>=8.3.4",
     "pytest-django>=4.10.0",
 ]
@@ -31,5 +32,14 @@ lint = [
     "pre-commit>=4.2.0",
 ]
 
-[tool.mypy]
-ignore_missing_imports = true
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "telewish.settings"
+python_files = ["test_*.py"]
+filterwarnings = [
+    "ignore::DeprecationWarning:passlib.*",
+]
+
+[tool.pyright]
+ignore = [
+  "tests/factories.py"
+]
