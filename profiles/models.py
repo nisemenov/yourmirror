@@ -17,14 +17,14 @@ class ProfileModel(models.Model):
 
     @property
     def followers(self):
-        return ProfileModel.objects.filter(follower_profiles__following=self)
+        return ProfileModel.objects.filter(follower_profiles__following=self)  # pyright: ignore[reportAttributeAccessIssue]
 
     @property
     def following(self):
-        return ProfileModel.objects.filter(following_profiles__follower=self)
+        return ProfileModel.objects.filter(following_profiles__follower=self)  # pyright: ignore[reportAttributeAccessIssue]
 
     def is_following(self, other_profile):
-        return FollowModel.objects.filter(
+        return FollowModel.objects.filter(  # pyright: ignore[reportAttributeAccessIssue]
             follower=self, following=other_profile
         ).exists()
 
@@ -51,10 +51,9 @@ class FollowModel(models.Model):
         unique_together = ["follower", "following"]
 
     def __str__(self):
-        return f"<FollowModel {self.profile.user.username} → {self.following.user.username}>"
+        return f"<FollowModel {self.profile.user.username} → {self.following.user.username}>"  # pyright: ignore[reportAttributeAccessIssue]
 
 
-@staticmethod
 @receiver(post_save, sender=User)
 def user_post_save(sender, instance: User, created: bool, **kwargs):
     if created:

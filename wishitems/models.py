@@ -31,7 +31,7 @@ class WishItemModel(models.Model):
     )
     reserved_at = models.DateTimeField(auto_now=True)
 
-    is_private = models.BooleanField(default=False)
+    is_private = models.BooleanField(default=False)  # pyright: ignore[reportArgumentType]
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -41,7 +41,7 @@ class WishItemModel(models.Model):
             base_slug = slugify(str(self.title))
             slug = base_slug
             num = 1
-            while WishItemModel.objects.filter(slug=slug).exists():
+            while WishItemModel.objects.filter(slug=slug).exists():  # pyright: ignore[reportAttributeAccessIssue]
                 slug = f"{base_slug}-{num}"
                 num += 1
             self.slug = slug

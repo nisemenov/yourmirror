@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 class EmailRegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True)
 
-    class Meta:
+    class Meta:  # pyright: ignore
         model = User
         fields = ("email", "password1", "password2")
 

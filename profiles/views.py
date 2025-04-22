@@ -46,16 +46,15 @@ class FollowingView(LoginRequiredMixin, ListView):
 class FollowItemCreateView(LoginRequiredMixin, ListView):
     def post(self, request, profile_id):
         target_profile = get_object_or_404(ProfileModel, id=profile_id)
-        me = request.user
+        me = request.user.profile
 
-        if target_profile.user == me:
+        if target_profile == me:
             return redirect("wishlist_me")
 
-        follow_obj, created = FollowModel.objects.get_or_create(
-            follower=me.profile,
+        follow_obj, created = FollowModel.objects.get_or_create(  # pyright: ignore[reportAttributeAccessIssue]
+            follower=me,
             following=target_profile,
         )
-
         if not created:
             follow_obj.delete()
 
