@@ -50,6 +50,11 @@ class FollowModel(models.Model):
     class Meta:
         unique_together = ["follower", "following"]
 
+    def save(self, *args, **kwargs):
+        if self.follower == self.following:
+            raise ValueError("User can't follow themselves")
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f"<FollowModel {self.profile.user.username} → {self.following.user.username}>"  # pyright: ignore[reportAttributeAccessIssue]
 
