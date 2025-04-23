@@ -1,5 +1,5 @@
 {% for item in wishitems %}
-    <a href="{% url "wishitem_detail" item.slug %}" class="flex flex-col w-full border border-gray-200  overflow-hidden">
+    <a href="{% url "wishitem_detail" item.id %}" class="flex flex-col w-full border border-gray-200  overflow-hidden">
         {% if item.picture %}
             <div>
                 <img src="{{ item.picture.url }}" alt="picture" class="w-full h-48 object-cover">

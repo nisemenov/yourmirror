@@ -16,14 +16,18 @@ urlpatterns = [
         name="wishlist",
     ),
     path("wishitem/add/", WishItemCreateView.as_view(), name="wishitem_create"),
-    path("wishitem/<slug:slug>/", WishItemDetailView.as_view(), name="wishitem_detail"),
     path(
-        "wishitem/<slug:slug>/edit/",
+        "wishitem/<uuid:wishitem_id>/",
+        WishItemDetailView.as_view(),
+        name="wishitem_detail",
+    ),
+    path(
+        "wishitem/<uuid:wishitem_id>/edit/",
         WishItemUpdateView.as_view(),
         name="wishitem_update",
     ),
     path(
-        "wishitem/<slug:slug>/delete/",
+        "wishitem/<uuid:wishitem_id>/delete/",
         WishItemDeleteView.as_view(),
         name="wishitem_delete",
     ),

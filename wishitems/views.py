@@ -6,7 +6,7 @@ from django.views.generic import (
     ListView,
     UpdateView,
 )
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 from profiles.models import ProfileModel
@@ -49,6 +49,7 @@ class WishItemDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = WishItemModel
     template_name = "wishitem_detail.html"
     context_object_name = "wishitem"
+    pk_url_kwarg = "wishitem_id"
 
     def test_func(self):
         wishitem = self.get_object()
@@ -58,7 +59,7 @@ class WishItemDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
         self.object = self.get_object()
 
         if self.object.profile.user == request.user:
-            return redirect("wishitem_detail", slug=self.object.slug)
+            return redirect("wishitem_detail", wishitem_id=self.object.id)
 
         # Тоггл логика
         if self.object.reserved == request.user.profile:
@@ -69,7 +70,7 @@ class WishItemDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
             self.object.reserved = request.user.profile
 
         self.object.save()
-        return redirect("wishitem_detail", slug=self.object.slug)
+        return redirect("wishitem_detail", wishitem_id=self.object.id)
 
 
 class WishItemCreateView(LoginRequiredMixin, CreateView):
@@ -88,15 +89,24 @@ class WishItemUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     form_class = WishItemForm
     template_name = "wishitem_form.html"
     success_url = reverse_lazy("wishlist_me")
+    pk_url_kwarg = "wishitem_id"
 
     def test_func(self):
         return self.get_object().profile.user == self.request.user
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["cancel_url"] = self.request.META.get(
+            "HTTP_REFERER", reverse("wishlist_me")
+        )
+        return context
 
 
 class WishItemDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = WishItemModel
     template_name = "wishitem_delete.html"
     success_url = reverse_lazy("wishlist_me")
+    pk_url_kwarg = "wishitem_id"
 
     def test_func(self):
         return self.get_object().profile.user == self.request.user

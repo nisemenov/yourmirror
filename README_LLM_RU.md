@@ -43,7 +43,7 @@
 
 - Элемент списка желаемого
 - Поля:
-  - `title`, `description`, `link`, `picture`, `slug`
+  - `title`, `description`, `link`, `picture`
   - `profile` (FK на `ProfileModel`)
   - `is_private`, `reserved` — bool
 

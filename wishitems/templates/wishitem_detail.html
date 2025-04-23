@@ -53,8 +53,8 @@
 
             {% if wishitem.profile.user == request.user %}
                 <div class="flex gap-4 mt-4">
-                    <a href="{% url 'wishitem_update' wishitem.slug %}" class="text-sm text-gray-600 hover:text-black underline">Редактировать</a>
-                    <a href="{% url 'wishitem_delete' wishitem.slug %}" class="text-sm text-red-500 hover:text-black underline">Удалить</a>
+                    <a href="{% url 'wishitem_update' wishitem.id %}" class="text-sm text-gray-600 hover:text-black underline">Редактировать</a>
+                    <a href="{% url 'wishitem_delete' wishitem.id %}" class="text-sm text-red-500 hover:text-black underline">Удалить</a>
                 </div>
             {% endif %}
         </div>
