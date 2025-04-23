@@ -17,6 +17,9 @@ migrate:
 	python manage.py migrate
 
 
-# LINT
+# TEST AND LINT
 lint:
 	uv run pre-commit run --all-files
+
+test:
+	uv run pytest tests/

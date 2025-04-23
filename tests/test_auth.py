@@ -7,7 +7,9 @@ from tests.factories import UserFactory
 from tests.values import VarStr
 
 
-@pytest.mark.django_db
+pytestmark = pytest.mark.django_db
+
+
 def test_register_view(client, basic_asserts_login):
     url = reverse("register")
     data = {
@@ -19,7 +21,6 @@ def test_register_view(client, basic_asserts_login):
     basic_asserts_login(response, "wishlist_me")
 
 
-@pytest.mark.django_db
 def test_login_view(client, basic_asserts_login):
     user = UserFactory()
     url = reverse("login")
@@ -31,7 +32,6 @@ def test_login_view(client, basic_asserts_login):
     basic_asserts_login(response, "wishlist_me")
 
 
-@pytest.mark.django_db
 def test_email_registration_form_valid():
     form_data = {
         "email": VarStr.USER_EMAIL,

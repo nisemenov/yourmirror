@@ -1,0 +1,114 @@
+import pytest
+
+from django.urls import reverse
+
+from tests.values import VarStr
+from wishitems.models import WishItemModel
+from wishitems.forms import WishItemForm
+from tests.factories import UserFactory, WishItemFactory
+
+
+pytestmark = pytest.mark.django_db
+
+
+def test_get_absolute_url():
+    wishitem = WishItemFactory()
+    expected_url = reverse("wishitem_detail", kwargs={"wishitem_id": wishitem.id})
+    assert wishitem.get_absolute_url == expected_url
+
+
+def test_wishlist_view(client, basic_asserts_template):
+    user = UserFactory()
+    WishItemFactory(
+        title=VarStr.WISHITEM_TITLE,
+        profile=user.profile,
+    )
+    client.force_login(user)
+    response = client.get(reverse("wishlist_me"))
+    basic_asserts_template(response, VarStr.WISHITEM_TITLE)
+
+
+def test_wishitem_form():
+    user = UserFactory()
+    form_data = {
+        "title": VarStr.WISHITEM_TITLE,
+        "link": VarStr.WISHLIST_LINK,
+        "description": VarStr.WISHLIST_DESCRIPTION,
+        "is_private": True,
+    }
+    form = WishItemForm(data=form_data)
+    assert form.is_valid()
+
+    instance = form.save(profile=user.profile)
+    assert instance.profile == user.profile
+
+
+def test_wishitem_detail_view(client, basic_asserts_template):
+    user = UserFactory()
+    wishitem = WishItemFactory(
+        title=VarStr.WISHITEM_TITLE,
+        profile=user.profile,
+    )
+
+    client.force_login(user)
+    url = reverse("wishitem_detail", kwargs={"wishitem_id": wishitem.id})
+    response = client.get(url)
+    basic_asserts_template(response, VarStr.WISHITEM_TITLE)
+
+
+def test_wishitem_detail_view_private(client):
+    user_1, user_2 = UserFactory.create_batch(2)
+    wishitem = WishItemFactory(profile=user_1.profile, is_private=True)
+
+    client.force_login(user_2)
+    url = reverse("wishitem_detail", kwargs={"wishitem_id": wishitem.id})
+    response = client.get(url)
+    assert response.status_code == 403
+
+
+def test_wishitem_create_view(client):
+    user = UserFactory()
+    client.force_login(user)
+    url = reverse("wishitem_create")
+    data = {
+        "title": VarStr.WISHITEM_TITLE,
+        "link": VarStr.WISHLIST_LINK,
+        "description": VarStr.WISHLIST_DESCRIPTION,
+        "is_private": False,
+    }
+    response = client.post(url, data)
+    assert response.status_code == 302
+    assert WishItemModel.objects.filter(  # pyright: ignore[reportAttributeAccessIssue]
+        title=VarStr.WISHITEM_TITLE,
+        profile=user.profile,
+    ).exists()
+
+
+def test_wishitem_update_view(client):
+    user = UserFactory()
+    wishitem = WishItemFactory(
+        title=VarStr.WISHITEM_TITLE,
+        profile=user.profile,
+    )
+    client.force_login(user)
+    url = reverse("wishitem_update", kwargs={"wishitem_id": wishitem.id})
+    data = {
+        "title": "new_title",
+    }
+    response = client.post(url, data)
+
+    assert response.status_code == 302
+    wishitem.refresh_from_db()
+    assert wishitem.title == "new_title"
+
+
+def test_delete_view(client):
+    user = UserFactory()
+    wishitem = WishItemFactory(
+        profile=user.profile,
+    )
+    client.force_login(user)
+    url = reverse("wishitem_delete", kwargs={"wishitem_id": wishitem.id})
+    response = client.post(url)
+    assert response.status_code == 302
+    assert not WishItemModel.objects.filter(id=wishitem.id).exists()  # pyright: ignore[reportAttributeAccessIssue]

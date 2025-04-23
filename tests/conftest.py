@@ -12,3 +12,12 @@ def basic_asserts_login():
         assert response.url == reverse(reverse_url, kwargs=url_kwargs)
 
     return asserts
+
+
+@pytest.fixture
+def basic_asserts_template():
+    def asserts(response, word):
+        assert response.status_code == 200
+        assert word.encode() in response.content
+
+    return asserts

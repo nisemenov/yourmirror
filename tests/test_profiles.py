@@ -6,7 +6,9 @@ from profiles.models import FollowModel
 from tests.factories import UserFactory
 
 
-@pytest.mark.django_db
+pytestmark = pytest.mark.django_db
+
+
 def test_follow_model():
     user_1, user_2 = UserFactory.create_batch(2)
     profile_1, profile_2 = user_1.profile, user_2.profile
@@ -24,7 +26,6 @@ def test_follow_model():
     assert profile_1.is_following(profile_2) is False
 
 
-@pytest.mark.django_db
 def test_follow_create_view(client, basic_asserts_login):
     user_1, user_2 = UserFactory.create_batch(2)
     profile_1, profile_2 = user_1.profile, user_2.profile
@@ -47,7 +48,6 @@ def test_follow_create_view(client, basic_asserts_login):
     ).exists()
 
 
-@pytest.mark.django_db
 def test_follow_self_create_view():
     profile = UserFactory().profile
 
@@ -57,7 +57,6 @@ def test_follow_self_create_view():
         )
 
 
-@pytest.mark.django_db
 def test_following_view(client):
     user_1, user_2 = UserFactory.create_batch(2)
     profile_1, profile_2 = user_1.profile, user_2.profile
