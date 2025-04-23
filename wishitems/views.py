@@ -58,7 +58,6 @@ class WishItemDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
         self.object = self.get_object()
 
         if self.object.profile.user == request.user:
-            # Нельзя резервировать свой айтем — просто редирект
             return redirect("wishitem_detail", slug=self.object.slug)
 
         # Тоггл логика

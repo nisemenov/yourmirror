@@ -47,8 +47,9 @@ class WishItemModel(models.Model):
             self.slug = slug
         super().save(*args, **kwargs)
 
+    @property
     def get_absolute_url(self):
-        return reverse("wish_detail", kwargs={"slug": self.slug})
+        return reverse("wishitem_detail", kwargs={"slug": self.slug})
 
     class Meta:
         ordering = ["title"]

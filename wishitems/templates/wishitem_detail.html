@@ -4,6 +4,7 @@
 {% block content %}
 <div class="py-6 px-6 max-w-4xl mx-auto space-y-6">
 
+        <a href="{% url "wishlist" wishitem.profile.id %}" class="flex flex-col w-full border border-gray-200  overflow-hidden cursor-pointer">Вернуться к вишлисту</a>
     <div class="flex gap-6">
         {% if wishitem.picture %}
             <img src="{{ wishitem.picture.url }}" alt="{{ wishitem.title }}"
@@ -31,21 +32,23 @@
                 <button disabled class="px-4 py-2 bg-gray-300 text-white rounded-xl cursor-not-allowed">
                     Зарезервировано
                 </button>
-            {% endif %}
 
-            {% if wishitem.profile.user != request.user %}
-                <form method="post" class="mt-4">
-                    {% csrf_token %}
-                    {% if wishitem.reserved.user == request.user %}
+                {% if wishitem.reserved.user == request.user %}
+                    <form method="post" class="mt-4">
+                        {% csrf_token %}
                         <button type="submit" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-xl">
                             Отменить бронь
                         </button>
-                    {% else %}
+                {% endif %}
+            {% else %}
+                {% if wishitem.profile.user != request.user %}
+                    <form method="post" class="mt-4">
+                        {% csrf_token %}
                         <button type="submit" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl">
                             Зарезервировать
                         </button>
-                    {% endif %}
-                </form>
+                    </form>
+                {% endif %}
             {% endif %}
 
             {% if wishitem.profile.user == request.user %}
