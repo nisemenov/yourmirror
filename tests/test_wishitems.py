@@ -17,6 +17,16 @@ def test_get_absolute_url():
     assert wishitem.get_absolute_url == expected_url
 
 
+# TODO приватные элемнты
+def test_wishlist_empty_view(client):
+    user_1, user_2 = UserFactory.create_batch(2)
+    client.force_login(user_2)
+    url = reverse("wishlist_profile", kwargs={"profile_id": user_1.profile.id})
+    response = client.get(url)
+    assert response.status_code == 200
+    assert VarStr.WISHILIST_EMPTY.encode() in response.content
+
+
 def test_wishlist_view(client, basic_asserts_template):
     user = UserFactory()
     WishItemFactory(
@@ -28,12 +38,27 @@ def test_wishlist_view(client, basic_asserts_template):
     basic_asserts_template(response, VarStr.WISHITEM_TITLE)
 
 
+def test_wishlist_view_with_private_item(client):
+    user_1, user_2 = UserFactory.create_batch(2)
+    WishItemFactory(
+        title=VarStr.WISHITEM_PRIVATE_TITLE,
+        profile=user_1.profile,
+        is_private=True,
+    )
+
+    client.force_login(user_2)
+    url = reverse("wishlist_profile", kwargs={"profile_id": user_1.profile.id})
+    response = client.get(url)
+    assert response.status_code == 200
+    assert VarStr.WISHITEM_PRIVATE_TITLE.encode() not in response.content
+
+
 def test_wishitem_form():
     user = UserFactory()
     form_data = {
         "title": VarStr.WISHITEM_TITLE,
-        "link": VarStr.WISHLIST_LINK,
-        "description": VarStr.WISHLIST_DESCRIPTION,
+        "link": VarStr.WISHITEM_LINK,
+        "description": VarStr.WISHITEM_DESCRIPTION,
         "is_private": True,
     }
     form = WishItemForm(data=form_data)
@@ -72,8 +97,8 @@ def test_wishitem_create_view(client):
     url = reverse("wishitem_create")
     data = {
         "title": VarStr.WISHITEM_TITLE,
-        "link": VarStr.WISHLIST_LINK,
-        "description": VarStr.WISHLIST_DESCRIPTION,
+        "link": VarStr.WISHITEM_LINK,
+        "description": VarStr.WISHITEM_DESCRIPTION,
         "is_private": False,
     }
     response = client.post(url, data)

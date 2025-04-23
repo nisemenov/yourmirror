@@ -35,14 +35,14 @@ def test_follow_create_view(client, basic_asserts_login):
     url = reverse("follow_create", kwargs={"profile_id": profile_2.id})
     response = client.post(url, HTTP_REFERER=f"/wishlist/{profile_2.id}/")
 
-    basic_asserts_login(response, "wishlist", {"profile_id": profile_2.id})
+    basic_asserts_login(response, "wishlist_profile", {"profile_id": profile_2.id})
     assert FollowModel.objects.filter(  # pyright: ignore[reportAttributeAccessIssue]
         follower=profile_1, following=profile_2
     ).exists()
 
     response = client.post(url, HTTP_REFERER=f"/wishlist/{profile_2.id}/")
 
-    basic_asserts_login(response, "wishlist", {"profile_id": profile_2.id})
+    basic_asserts_login(response, "wishlist_profile", {"profile_id": profile_2.id})
     assert not FollowModel.objects.filter(  # pyright: ignore[reportAttributeAccessIssue]
         follower=profile_1, following=profile_2
     ).exists()

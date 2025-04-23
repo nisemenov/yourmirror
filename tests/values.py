@@ -7,5 +7,8 @@ class VarStr(enum.StrEnum):
     USER_PASSWORD2 = "SuperStrong123!"
 
     WISHITEM_TITLE = "test_title"
-    WISHLIST_LINK = "https://example.com"
-    WISHLIST_DESCRIPTION = "test_desc"
+    WISHITEM_PRIVATE_TITLE = "test_private_title"
+    WISHITEM_LINK = "https://example.com"
+    WISHITEM_DESCRIPTION = "test_desc"
+
+    WISHILIST_EMPTY = "Этот вишлист пока пуст."
