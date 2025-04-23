@@ -1,5 +1,7 @@
 import uuid
 
+from django.db.models.signals import pre_save, post_delete
+from django.dispatch import receiver
 from django.urls import reverse
 from django.db import models
 
@@ -44,3 +46,25 @@ class WishItemModel(models.Model):
 
     def __str__(self):
         return f"<WishItemModel {self.title}>"
+
+
+@receiver(pre_save, sender=WishItemModel)
+def delete_old_picture_on_update(sender, instance, **kwargs):
+    if not instance.pk:
+        return
+
+    try:
+        old_file = sender.objects.get(pk=instance.pk).picture
+    except sender.DoesNotExist:
+        return
+
+    new_file = instance.picture
+    if old_file and old_file != new_file and old_file.storage.exists(old_file.name):
+        old_file.delete(save=False)
+
+
+@receiver(post_delete, sender=WishItemModel)
+def delete_picture_on_delete(sender, instance, **kwargs):
+    pic = instance.picture
+    if pic and pic.storage.exists(pic.name):
+        pic.delete(save=False)
