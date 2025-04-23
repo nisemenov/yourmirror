@@ -4,16 +4,17 @@ from .views import (
     WishItemCreateView,
     WishItemUpdateView,
     WishItemDeleteView,
-    WishlistView,
+    WishlistMyView,
+    WishlistProfileView,
 )
 
 
 urlpatterns = [
-    path("wishlist/me/", WishlistView.as_view(), name="wishlist_me"),
+    path("wishlist/me/", WishlistMyView.as_view(), name="wishlist_me"),
     path(
         "wishlist/<uuid:profile_id>/",
-        WishlistView.as_view(),
-        name="wishlist",
+        WishlistProfileView.as_view(),
+        name="wishlist_profile",
     ),
     path("wishitem/add/", WishItemCreateView.as_view(), name="wishitem_create"),
     path(

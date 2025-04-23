@@ -4,7 +4,7 @@
 {% block content %}
 <div class="py-6 px-6 max-w-4xl mx-auto space-y-6">
 
-        <a href="{% url "wishlist" wishitem.profile.id %}" class="flex flex-col w-full border border-gray-200  overflow-hidden cursor-pointer">Вернуться к вишлисту</a>
+        <a href="{% url "wishlist_profile" wishitem.profile.id %}" class="flex flex-col w-full border border-gray-200  overflow-hidden cursor-pointer">Вернуться к вишлисту</a>
     <div class="flex gap-6">
         {% if wishitem.picture %}
             <img src="{{ wishitem.picture.url }}" alt="{{ wishitem.title }}"

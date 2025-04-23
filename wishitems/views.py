@@ -15,39 +15,45 @@ from .models import WishItemModel
 from .forms import WishItemForm
 
 
-class WishlistView(LoginRequiredMixin, ListView):
-    template_name = "wishlist.html"
+class WishlistMyView(ListView):
+    template_name = "wishlist/my.html"
+    context_object_name = "wishitems"
+
+    def get_queryset(self):
+        return self.request.user.profile.wishitems.all()
+
+
+class WishlistProfileView(ListView):
+    template_name = "wishlist/profile.html"
     context_object_name = "wishitems"
 
     def get_profile(self):
-        profile_id = self.kwargs.get("profile_id")
-        if profile_id:
-            return get_object_or_404(ProfileModel, id=profile_id)
-        return self.request.user.profile
+        return get_object_or_404(ProfileModel, id=self.kwargs["profile_id"])
 
     def get_queryset(self):
-        return self.get_profile().wishitems.all()
+        profile = self.get_profile()
+        if self.request.user.is_authenticated and self.request.user.profile == profile:
+            return profile.wishitems.all()
+        return profile.wishitems.filter(is_private=False)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
         profile = self.get_profile()
-        req_user = self.request.user
-
         context["owner"] = profile
-        context["is_owner"] = profile == req_user.profile
-        context["is_following"] = (
-            req_user.profile.is_following(other_profile=context["owner"])
-            if not context["is_owner"]
-            else None
-        )
+
+        if self.request.user.is_authenticated:
+            context["is_owner"] = self.request.user.profile == profile
+            context["is_following"] = self.request.user.profile.is_following(profile)
+        else:
+            context["is_owner"] = False
+            context["is_following"] = False
 
         return context
 
 
-class WishItemDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
+class WishItemDetailView(UserPassesTestMixin, DetailView):
     model = WishItemModel
-    template_name = "wishitem_detail.html"
+    template_name = "wishitem/detail.html"
     context_object_name = "wishitem"
     pk_url_kwarg = "wishitem_id"
 
@@ -58,15 +64,9 @@ class WishItemDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
 
-        if self.object.profile.user == request.user:
-            return redirect("wishitem_detail", wishitem_id=self.object.id)
-
-        # Тоггл логика
-        if self.object.reserved == request.user.profile:
-            # Снять бронь
+        if self.object.reserved:
             self.object.reserved = None
-        elif self.object.reserved is None:
-            # Забронировать
+        else:
             self.object.reserved = request.user.profile
 
         self.object.save()
@@ -76,7 +76,7 @@ class WishItemDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
 class WishItemCreateView(LoginRequiredMixin, CreateView):
     model = WishItemModel
     form_class = WishItemForm
-    template_name = "wishitem_form.html"
+    template_name = "wishitem/form.html"
     success_url = reverse_lazy("wishlist_me")
 
     def form_valid(self, form):
@@ -87,7 +87,7 @@ class WishItemCreateView(LoginRequiredMixin, CreateView):
 class WishItemUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = WishItemModel
     form_class = WishItemForm
-    template_name = "wishitem_form.html"
+    template_name = "wishitem/form.html"
     success_url = reverse_lazy("wishlist_me")
     pk_url_kwarg = "wishitem_id"
 
@@ -104,7 +104,7 @@ class WishItemUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
 class WishItemDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = WishItemModel
-    template_name = "wishitem_delete.html"
+    template_name = "wishitem/delete.html"
     success_url = reverse_lazy("wishlist_me")
     pk_url_kwarg = "wishitem_id"
 

@@ -13,12 +13,14 @@
             </p>
         </div>
 
+        {% if not user.is_anonymous %}
         <form method="post" action="{% url 'follow_create' owner.id %}">
             {% csrf_token %}
             <button class="border px-4 py-2 rounded-xl">
                 {% if is_following %}Отписаться{% else %}Подписаться{% endif %}
             </button>
         </form>
+    {% endif %}
     {% endif %}
 
     {% if not wishitems.exists %}
@@ -28,9 +30,9 @@
     {% endif %}
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {% include "wishlist_items.html" %}
+        {% include "wishlist/items.html" %}
         {% if is_owner %}
-            {% include "wishlist_button.html" %}
+            {% include "wishlist/button.html" %}
         {% endif %}
     </div>
 
