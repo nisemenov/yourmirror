@@ -5,7 +5,6 @@
 
 {% block content %}
 <div class="py-4 px-6">
-
     {% if not is_owner %}
         <div class="flex justify-between items-center py-4">
             <p class="uppercase">
@@ -14,13 +13,8 @@
         </div>
 
         {% if not user.is_anonymous %}
-        <form method="post" action="{% url 'follow_create' owner.id %}">
-            {% csrf_token %}
-            <button class="border px-4 py-2 rounded-xl">
-                {% if is_following %}Отписаться{% else %}Подписаться{% endif %}
-            </button>
-        </form>
-    {% endif %}
+            {% include "follow_button.html" with profile_id=owner.id is_following=is_following %}
+        {% endif %}
     {% endif %}
 
     {% if not wishitems.exists %}
@@ -30,11 +24,13 @@
     {% endif %}
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {% include "wishlist/items.html" %}
+        {% for item in wishitems %}
+            {% include "wishlist/item.html" %}
+        {% endfor %}
+
         {% if is_owner %}
-            {% include "wishlist/button.html" %}
+            {% include "wishlist/add_item_button.html" %}
         {% endif %}
     </div>
-
 </div>
 {% endblock %}

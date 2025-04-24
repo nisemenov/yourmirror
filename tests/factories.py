@@ -1,9 +1,14 @@
 import factory
 from factory.declarations import Sequence, LazyAttribute
+from faker import Faker
 
 from django.contrib.auth.models import User
+from django.core.files.base import ContentFile
 
 from wishitems.models import WishItemModel
+
+
+fake = Faker()
 
 
 class UserFactory(factory.django.DjangoModelFactory):
@@ -16,13 +21,20 @@ class UserFactory(factory.django.DjangoModelFactory):
     password = factory.django.Password("testpass123")
 
 
+def faker_image_file():
+    image_bytes = fake.image(image_format="png", hue="blue", luminosity="light")
+    return ContentFile(image_bytes, "faker.png")
+
+
 class WishItemFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = WishItemModel
 
-    title = factory.Faker("sentence", nb_words=3)
-    description = factory.Faker("text", max_nb_chars=100)
+    title = factory.Faker("sentence", nb_words=3, locale="ru_RU")
+    description = factory.Faker("text", max_nb_chars=100, locale="ru_RU")
     link = factory.Faker("url")
-    is_private = False
+    picture = factory.LazyFunction(faker_image_file)
 
     profile = factory.LazyAttribute(lambda _: UserFactory().profile)
+
+    is_private = factory.Faker("boolean")

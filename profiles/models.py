@@ -28,8 +28,12 @@ class ProfileModel(models.Model):
             follower=self, following=other_profile
         ).exists()
 
+    @property
+    def wishitems_public(self):
+        return self.wishitems.filter(is_private=False)  # pyright: ignore[reportAttributeAccessIssue]
+
     def __str__(self):
-        return f"<ProfileModel {self.user}>"
+        return f"<ProfileModel {self.user.username} / {self.user.first_name}>"
 
 
 class FollowModel(models.Model):

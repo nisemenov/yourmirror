@@ -1,7 +1,7 @@
 {% load active_url %}
 
 <div class="fixed top-0 flex flex-col w-full uppercase">
-    <div class="flex flex-row px-2 pt-4 justify-between items-center">
+    <div class="flex flex-row px-2 p-4 justify-between items-center bg-gray-50 z-100">
         <a href="/" class="w-[6.5rem] text-right {% is_active_url "home" %}">главная</a>
         <div class="w-[8rem] text-left">
             {% if user.is_authenticated %}

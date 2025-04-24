@@ -4,24 +4,41 @@
 {% block title %}Подписки{% endblock %}
 
 {% block content %}
+<div class="py-6 px-4 space-y-8">
     {% if profiles.exists %}
         {% for profile in profiles %}
-        <a href="{% url "wishlist_profile" profile.id %}">{{ profile.user.last_name }} {{ profile.user.first_name }}</a>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {% for item in profile.wishitems.all %}
-            <a href="{% url "wishlist_profile" profile.id %}" class="flex flex-col w-full border border-gray-200  overflow-hidden">
-                {% if item.picture %}
-                    <div>
-                        <img src="{{ item.picture.url }}" alt="picture" class="w-full h-48 object-cover">
-                    </div>
-                {% endif %}
-            </a>
-        {% endfor %}
+        <div class="border border-gray-200 rounded-2xl p-4 shadow-sm space-y-4">
+
+            <div class="flex justify-between items-center">
+                <div>
+                    <a href="{% url "wishlist_profile" profile.id %}" class="text-xl font-semibold">
+                        {{ profile.user.last_name }} {{ profile.user.first_name }}
+                    </a>
                 </div>
+
+                {% if not user.is_anonymous and user.profile != profile %}
+                    {% include "follow_button.html" with profile_id=profile.id is_following=True %}
+                {% endif %}
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {% for item in profile.wishitems_public|slice:":3" %}
+                <a href="{% url "wishlist_profile" profile.id %}" class="flex flex-col border border-gray-200 rounded-xl overflow-hidden bg-white">
+                    {% if item.picture %}
+                    <div class="w-full aspect-[4/3] bg-gray-100">
+                        <img src="{{ item.picture.url }}"
+                             alt="picture"
+                             class="w-full h-full object-contain" />
+                    </div>
+                    {% endif %}
+                </a>
+                {% endfor %}
+            </div>
+
+        </div>
         {% endfor %}
     {% else %}
-    <p>Пока что вы не подписались ни на один вишлист.</p>
-
-        {% endif %}
-
+    <p class="text-gray-500 text-center">Пока что вы не подписались ни на один вишлист.</p>
+    {% endif %}
+</div>
 {% endblock %}
