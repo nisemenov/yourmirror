@@ -33,7 +33,6 @@ class WishItemFactory(factory.django.DjangoModelFactory):
     title = factory.Faker("sentence", nb_words=3, locale="ru_RU")
     description = factory.Faker("text", max_nb_chars=100, locale="ru_RU")
     link = factory.Faker("url")
-    picture = factory.LazyFunction(faker_image_file)
 
     profile = factory.LazyAttribute(lambda _: UserFactory().profile)
 
