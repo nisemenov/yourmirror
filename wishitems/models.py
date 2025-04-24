@@ -2,7 +2,6 @@ import uuid
 
 from django.db.models.signals import pre_save, post_delete
 from django.dispatch import receiver
-from django.urls import reverse
 from django.db import models
 
 
@@ -36,10 +35,6 @@ class WishItemModel(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-    @property
-    def get_absolute_url(self):
-        return reverse("wishitem_detail", kwargs={"wishitem_id": self.id})
 
     class Meta:
         ordering = ["title"]
