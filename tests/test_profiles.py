@@ -26,7 +26,7 @@ def test_follow_model():
     assert profile_1.is_following(profile_2) is False
 
 
-def test_follow_create_view(client, basic_asserts_login):
+def test_follow_create_view(client, basic_asserts_reverse):
     user_1, user_2 = UserFactory.create_batch(2)
     profile_1, profile_2 = user_1.profile, user_2.profile
 
@@ -35,14 +35,14 @@ def test_follow_create_view(client, basic_asserts_login):
     url = reverse("follow_create", kwargs={"profile_id": profile_2.id})
     response = client.post(url, HTTP_REFERER=f"/wishlist/{profile_2.id}/")
 
-    basic_asserts_login(response, "wishlist_profile", {"profile_id": profile_2.id})
+    basic_asserts_reverse(response, "wishlist_profile", {"profile_id": profile_2.id})
     assert FollowModel.objects.filter(  # pyright: ignore[reportAttributeAccessIssue]
         follower=profile_1, following=profile_2
     ).exists()
 
     response = client.post(url, HTTP_REFERER=f"/wishlist/{profile_2.id}/")
 
-    basic_asserts_login(response, "wishlist_profile", {"profile_id": profile_2.id})
+    basic_asserts_reverse(response, "wishlist_profile", {"profile_id": profile_2.id})
     assert not FollowModel.objects.filter(  # pyright: ignore[reportAttributeAccessIssue]
         follower=profile_1, following=profile_2
     ).exists()

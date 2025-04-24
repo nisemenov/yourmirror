@@ -10,5 +10,9 @@ class VarStr(enum.StrEnum):
     WISHITEM_PRIVATE_TITLE = "test_private_title"
     WISHITEM_LINK = "https://example.com"
     WISHITEM_DESCRIPTION = "test_desc"
+    WISHITEM_RESERVED = "Зарезервировано"
+    WISHITEM_UPDATE = "Редактировать"
+    WISHITEM_DELETE = "Удалить"
 
-    WISHILIST_EMPTY = "Этот вишлист пока пуст."
+    WISHILIST_PROFILE_EMPTY = "Этот вишлист пока пуст."
+    WISHILIST_MY_EMPTY = "Ваш вишлист пока пуст."

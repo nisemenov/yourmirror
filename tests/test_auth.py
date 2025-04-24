@@ -10,7 +10,7 @@ from tests.values import VarStr
 pytestmark = pytest.mark.django_db
 
 
-def test_register_view(client, basic_asserts_login):
+def test_register_view(client, basic_asserts_reverse):
     url = reverse("register")
     data = {
         "email": VarStr.USER_EMAIL,
@@ -18,10 +18,10 @@ def test_register_view(client, basic_asserts_login):
         "password2": VarStr.USER_PASSWORD2,
     }
     response = client.post(url, data)
-    basic_asserts_login(response, "wishlist_me")
+    basic_asserts_reverse(response, "wishlist_me")
 
 
-def test_login_view(client, basic_asserts_login):
+def test_login_view(client, basic_asserts_reverse):
     user = UserFactory()
     url = reverse("login")
     data = {
@@ -29,7 +29,7 @@ def test_login_view(client, basic_asserts_login):
         "password": "testpass123",
     }
     response = client.post(url, data)
-    basic_asserts_login(response, "wishlist_me")
+    basic_asserts_reverse(response, "wishlist_me")
 
 
 def test_email_registration_form_valid():

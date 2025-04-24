@@ -15,7 +15,7 @@ from .models import WishItemModel
 from .forms import WishItemForm
 
 
-class WishlistMyView(ListView):
+class WishlistMyView(LoginRequiredMixin, ListView):
     template_name = "wishlist/my.html"
     context_object_name = "wishitems"
 
