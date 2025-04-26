@@ -6,6 +6,8 @@ from profiles.forms import EmailRegistrationForm
 from tests.factories import UserFactory
 from tests.values import VarStr
 
+from profiles.models import ProfileModel
+
 
 pytestmark = pytest.mark.django_db
 
@@ -19,6 +21,7 @@ def test_register_view(client, basic_asserts_reverse):
     }
     response = client.post(url, data)
     basic_asserts_reverse(response, "wishlist_me")
+    assert ProfileModel.objects.filter(user__username=VarStr.USER_EMAIL).exists()
 
 
 def test_login_view(client, basic_asserts_reverse):
