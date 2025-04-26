@@ -4,11 +4,11 @@
 {% block title %}Вишлист{% endblock %}
 
 {% block content %}
-<div class="py-4 px-6">
+<div class="py-4 pl-6 pr-40">
     {% if not is_owner %}
         <div class="flex justify-between items-center py-4">
             <p class="uppercase">
-                Это вишлист {{ owner.user.last_name }} {{ owner.user.first_name }}.
+                Это вишлист {{ owner.user.first_name }}.
             </p>
         </div>
 

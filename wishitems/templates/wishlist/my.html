@@ -4,14 +4,17 @@
 {% block title %}Вишлист{% endblock %}
 
 {% block content %}
-<div class="py-4 px-6">
+<div class="py-4 pl-6 pr-40">
     {% if not wishitems.exists %}
         <div class="text-center py-12">
             <p class="text-lg text-gray-600 py-6">Ваш вишлист пока пуст. Но это легко исправить.</p>
         </div>
     {% endif %}
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="py-6">
+        {% include "main_button.html" with url_name="wishitem_create" text="добавить желание" black=False %}
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {% for item in wishitems %}
             {% include "wishlist/item.html" %}
         {% endfor %}

@@ -4,7 +4,7 @@
 
 {% block content %}
 <section class="flex justify-center items-center">
-    <div class="w-full max-w-2xl pt-[120px] uppercase">
+    <div class="w-full max-w-2xl pt-[60px] uppercase">
         <div class="flex mb-8">
             <a href="{% url 'login' %}" class="text-gray-500 hover:text-gray-800">авторизация</a>
             <p class="ml-4 text-gray-800 underline cursor-default">регистрация</p>
@@ -14,35 +14,10 @@
 
         <form method="post" class="space-y-8 text-gray-800">
             {% csrf_token %}
-            <div class="block">
-                <label for="id_email">email</label>
-                <div class="mt-2">
-                    <input type="email" name="email" id="id_email" class="w-full border-b-1 border-black outline-none py-3 caret-black focus:caret-black" required>
-                </div>
-                {% if form.email.errors %}
-                    <p class="text-red-500 text-sm mt-1">{{ form.email.errors.0 }}</p>
-                {% endif %}
-            </div>
-
-            <div class="block">
-                <label for="id_password1">Пароль</label>
-                <div class="mt-2">
-                    <input type="password" name="password1" id="id_password1" class="w-full border-b-1 border-black outline-none py-3 caret-black focus:caret-black" required>
-                </div>
-                {% if form.password1.errors %}
-                    <p class="text-red-500 text-sm mt-1">{{ form.password1.errors.0 }}</p>
-                {% endif %}
-            </div>
-
-            <div class="block">
-                <label for="id_password2">Подтверждение пароля</label>
-                <div class="mt-2">
-                    <input type="password" name="password2" id="id_password2" class="w-full border-b-1 border-black outline-none py-3 caret-black focus:caret-black" required>
-                </div>
-                {% if form.password2.errors %}
-                    <p class="text-red-500 text-sm mt-1">{{ form.password2.errors.0 }}</p>
-                {% endif %}
-            </div>
+            {% include "registration/field.html" with field=form.email field_type="email" label="Почта" %}
+            {% include "registration/field.html" with field=form.password1 field_type="password" label="Пароль" %}
+            {% include "registration/field.html" with field=form.password2 field_type="password" label="Подтверждение пароля" %}
+            {% include "registration/field.html" with field=form.first_name field_type="first_name" label="Имя" %}
 
             <div>
                 <button type="submit" class="w-full bg-black text-white py-4 px-4 rounded-none hover:bg-gray-700 focus:outline-none focus:ring-0 uppercase">
@@ -50,6 +25,7 @@
                 </button>
             </div>
         </form>
+
     </div>
 </section>
 {% endblock %}

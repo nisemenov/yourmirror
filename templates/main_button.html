@@ -1,0 +1,9 @@
+{% if black %}
+<a href="{% url url_name %}" class="px-6 py-3 bg-gray-900 text-white rounded-none hover:bg-gray-700 transition">
+    {{ text }}
+</a>
+{% else %}
+<a href="{% url url_name %}" class="px-6 py-3 border border-gray-300 rounded-none hover:bg-gray-100 transition">
+    {{ text }}
+</a>
+{% endif %}

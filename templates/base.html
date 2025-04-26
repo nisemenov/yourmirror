@@ -4,22 +4,19 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}telewish{% endblock %}</title>
+    <title>{% block title %}yourmirror{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% tailwind_css %}
 </head>
 
 <body class="flex flex-col min-h-screen">
-    <header>
-        {% include "header.html" %}
-    </header>
+    {% include "header.html" %}
+    {% include "nav.html" %}
 
-    <main class="flex-grow pt-12 pb-6 pr-34">
-      {% block content %}{% endblock %}
+    <main class="flex-grow pt-16">
+        {% block content %}{% endblock %}
     </main>
 
-    <footer class="pr-34">
-        {% include "footer.html" %}
-    </footer>
+    {% include "footer.html" %}
 </body>
 </html>

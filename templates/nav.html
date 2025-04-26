@@ -1,0 +1,28 @@
+{% load active_url %}
+
+<nav class="fixed right-0 pb-20 top-16 h-full uppercase">
+    <div class="flex flex-col justify-between w-[8rem] h-full">
+        <div>
+            <ul class="space-y-2">
+                {% if user.is_authenticated %}
+                    <li><a href="{% url "following" %}" class="{% is_active_url "following" %}">подписки</a></li>
+                    <li><a href="{% url "settings" %}" class="{% is_active_url "settings" %}">настройки</a></li>
+                {% endif %}
+            </ul>
+            {% if user.is_authenticated %}
+                <form method="post" action="{% url "logout" %}">
+                    {% csrf_token %}
+                    <button type="submit" class="mt-2 text-gray-500 uppercase cursor-pointer hover:text-black" aria-label="Выйти">Выйти</button>
+                </form>
+            {% endif %}
+        </div>
+        <ul class="space-y-2">
+            <li>
+                <a href="{% url "contacts" %}" class="{% is_active_url "contacts" %}">контакты</a>
+            </li>
+            <!-- <li> -->
+            <!--     <a href="{% url "about" %}" class="{% is_active_url "about" %}">о проекте</a> -->
+            <!-- </li> -->
+        </ul>
+    </div>
+</nav>
