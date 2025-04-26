@@ -8,11 +8,15 @@ class EmailRegistrationForm(UserCreationForm):
 
     class Meta:  # pyright: ignore
         model = User
-        fields = ("email", "password1", "password2")
+        fields = (
+            "email",
+            "password1",
+            "password2",
+            "first_name",
+        )
 
     def save(self, commit=True):
         user = super().save(commit=False)
-        user.email = self.cleaned_data["email"]
         user.username = self.cleaned_data["email"]
         if commit:
             user.save()
