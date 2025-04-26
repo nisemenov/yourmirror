@@ -1,0 +1,43 @@
+[project]
+name = "link_preview"
+version = "1.0.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "alembic>=1.14.1",
+    "asyncpg>=0.30.0",
+    "litestar[jwt,redis,sqlalchemy,standard]>=2.14.0",
+    "passlib>=1.7.4",
+    "psycopg2-binary>=2.9.10",
+    "pydantic>=2.10.6",
+    "pydantic-settings>=2.7.1",
+    "python-dotenv>=1.0.1",
+    "questionary>=2.1.0",
+    "sqladmin-litestar-plugin>=0.2.0",
+    "sqlalchemy-utils>=0.41.2",
+    "sqlalchemy[asyncio]>=2.0.38",
+]
+
+[tool.uv]
+default-groups = ["lint", "test"]
+
+[dependency-groups]
+test = [
+    "pytest>=8.3.4",
+]
+lint = [
+    "codespell>=2.4.1",
+    "mypy>=1.15.0",
+    "pre-commit>=4.1.0",
+    "ruff>=0.9.6",
+]
+
+[tool.mypy]
+ignore_missing_imports = true
+
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    "ignore::DeprecationWarning:passlib.*",
+]
