@@ -1,20 +1,14 @@
-# DEV COMMANDS
-minio:
-	docker exec -it minio bash
-
-psql:
-	docker exec -it postgres psql -d telewish -U postgres
-
-tailwind:
-	python manage.py tailwind start
+# SERVER
+run-server:
+	uv run --package your_mirror.backend -- python manage.py runserver
 
 
 # MIGRATIONS
 makemigrations:
-	python manage.py makemigrations
+	uv run --package your_mirror.backend -- python manage.py makemigrations
 
 migrate:
-	python manage.py migrate
+	uv run --package your_mirror.backend -- python manage.py migrate
 
 
 # TEST AND LINT

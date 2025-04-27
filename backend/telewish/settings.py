@@ -6,8 +6,9 @@ from pathlib import Path
 env = environ.Env(DEBUG=(bool, False))
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+PROJECT_ROOT = BASE_DIR.parent
 
-environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
+environ.Env.read_env(os.path.join(PROJECT_ROOT, ".env"))
 
 DEBUG = env("DEBUG")
 
