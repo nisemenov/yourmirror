@@ -31,8 +31,26 @@
         </div>
     </div>
 
-    <div class="justify-self-center px-4">
-        <img src="{{ MEDIA_URL }}common/home/main.png" alt="Список желаний" class="max-h-[60vh] w-auto object-contain ml-auto">
-    </div>
+<div class="justify-self-center px-4">
+    <img src="{{ MEDIA_URL }}common/home/main.png" alt="Список желаний"
+         class="max-h-[60vh] w-auto object-contain ml-auto"
+         onmouseover="playSong()"
+         onmouseout="pauseSong()">
+</div>
+
+<audio id="song" src="{{ MEDIA_URL }}common/home/main_song.mp3" preload="auto"></audio>
+
+<script>
+    const song = document.getElementById('song');
+
+    function playSong() {
+        song.play(); // Запускает песню
+    }
+
+    function pauseSong() {
+        song.pause(); // Останавливает песню, когда курсор уходит
+        <!-- song.currentTime = 0; // Сбрасывает песню в начало -->
+    }
+</script>
 </div>
 {% endblock %}
