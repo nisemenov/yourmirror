@@ -7,11 +7,12 @@
 <div class="py-4 pl-6 pr-40">
     {% if not wishitems.exists %}
         <div class="text-center py-12 uppercase">
-            <h2>Ваш вишлист пока пуст, Но это легко исправить</h2>
+            <h2>Ваш вишлист пока пуст, но это легко исправить</h2>
         </div>
     {% else %}
-        <div class="pb-6">
-            {% include "main_button.html" with url_name="wishitem_create" text="добавить желание" black=False %}
+        <div class="pb-6 space-x-4">
+            {% include "main_button.html" with url_name="wishitem_create" text="добавить желание" black=True %}
+            {% include "wishlist/share_button.html" %}
         </div>
     {% endif %}
 
