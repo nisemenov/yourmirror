@@ -5,48 +5,24 @@
 
 {% block content %}
 <div class="py-4 pl-6 pr-40">
+    <div class="pt-4 pb-6 space-y-4 uppercase">
+        <h2>вишлист {{ owner.user.first_name }}</h2>
+
+        {% if not user.is_anonymous %}
+            {% include "follow_button.html" with profile_id=owner.id is_following=is_following %}
+        {% endif %}
+    </div>
+
     {% if not wishitems.exists %}
         <div class="text-center py-12 uppercase">
-            <h2>Ваш вишлист пока пуст, Но это легко исправить</h2>
-        </div>
-    {% else %}
-        <div class="pb-6">
-            {% include "main_button.html" with url_name="wishitem_create" text="добавить желание" black=False %}
+            <h2>Этот вишлист пока пуст</h2>
         </div>
     {% endif %}
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
         {% for item in wishitems %}{% include "wishlist/item.html" %}{% endfor %}
-        {% include "wishlist/add_item_button.html" %}
-    </div>
 
-
-    {% if not is_owner %}
-        <div class="flex justify-between items-center py-4">
-            <p class="uppercase">
-                Это вишлист {{ owner.user.first_name }}.
-            </p>
-        </div>
-
-        {% if not user.is_anonymous %}
-            {% include "follow_button.html" with profile_id=owner.id is_following=is_following %}
-        {% endif %}
-    {% endif %}
-
-    {% if not wishitems.exists %}
-        <div class="text-center py-12">
-            <p class="text-lg text-gray-600 py-6">Этот вишлист пока пуст.</p>
-        </div>
-    {% endif %}
-
-    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {% for item in wishitems %}
-            {% include "wishlist/item.html" %}
-        {% endfor %}
-
-        {% if is_owner %}
-            {% include "wishlist/add_item_button.html" %}
-        {% endif %}
+        {% if is_owner %}{% include "wishlist/add_item_button.html" %}{% endif %}
     </div>
 </div>
 {% endblock %}

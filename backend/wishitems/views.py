@@ -27,6 +27,14 @@ class WishlistProfileView(ListView):
     template_name = "wishlist/profile.html"
     context_object_name = "wishitems"
 
+    def dispatch(self, request, *args, **kwargs):
+        profile_id = kwargs.get("profile_id")
+
+        if request.user.is_authenticated and profile_id == request.user.profile.id:
+            return redirect("wishlist_me")
+
+        return super().dispatch(request, *args, **kwargs)
+
     def get_profile(self):
         return get_object_or_404(ProfileModel, id=self.kwargs["profile_id"])
 
