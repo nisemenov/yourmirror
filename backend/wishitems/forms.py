@@ -5,7 +5,15 @@ from .models import WishItemModel
 class WishItemForm(forms.ModelForm):
     class Meta:
         model = WishItemModel
-        fields = ["title", "link", "description", "picture", "is_private"]
+        fields = [
+            "title",
+            "link",
+            "description",
+            "picture",
+            "price",
+            "price_currency",
+            "is_private",
+        ]
         widgets = {
             "title": forms.TextInput(
                 attrs={"class": "w-full border border-gray-300 rounded-xl p-2"}
@@ -18,6 +26,12 @@ class WishItemForm(forms.ModelForm):
                     "class": "w-full border border-gray-300 rounded-xl p-2",
                     "rows": 3,
                 }
+            ),
+            "price": forms.TextInput(
+                attrs={"class": "w-full border border-gray-300 rounded-xl p-2"}
+            ),
+            "price_currency": forms.Select(
+                attrs={"class": "w-full border border-gray-300 rounded-xl p-2"}
             ),
             "picture": forms.ClearableFileInput(
                 attrs={"class": "w-full border border-gray-300 rounded-xl p-2"}

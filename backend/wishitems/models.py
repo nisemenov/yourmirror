@@ -14,11 +14,19 @@ def upload_to_wishlist(instance, filename):
 
 
 class WishItemModel(models.Model):
+    PRICE_CURRENCY_CHOICES = [
+        ("₽", "RUB"),
+        ("$", "USD"),
+        ("€", "EUR"),
+    ]
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, unique=True)
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     link = models.URLField(blank=True)
     picture = models.ImageField(upload_to=upload_to_wishlist, blank=True, null=True)
+    price = models.CharField(max_length=100, blank=True)
+    price_currency = models.CharField(choices=PRICE_CURRENCY_CHOICES, blank=True)
 
     profile = models.ForeignKey(
         ProfileModel,
@@ -38,6 +46,10 @@ class WishItemModel(models.Model):
 
     class Meta:
         ordering = ["title"]
+
+    @property
+    def get_price(self):
+        return self.price + " " + self.price_currency
 
     def __str__(self):
         return f"<WishItemModel {self.title}>"
