@@ -1,6 +1,12 @@
 <form method="post" action="{% url 'follow_create' profile_id %}">
     {% csrf_token %}
-    <button class="px-4 py-2 border rounded-md cursor-pointer">
-        {% if is_following %}Отписаться{% else %}Подписаться{% endif %}
-    </button>
+    {% if is_following %}
+        <button class="px-4 py-3 border border-gray-300 rounded-none hover:bg-gray-100 transition cursor-pointer">
+            Отписаться
+        </button>
+    {% else %}
+        <button class="px-4 py-3 bg-gray-900 text-white rounded-none hover:bg-gray-700 transition cursor-pointer">
+            Подписаться
+        </button>
+    {% endif %}
 </form>
