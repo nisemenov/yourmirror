@@ -1,13 +1,12 @@
-<a href="{% url "wishitem_detail" item.id %}" class="flex flex-col justify-center w-full border border-gray-200 rounded-none overflow-hidden">
-    {% if item.picture %}
-        <div class="">
-            <img src="{{ item.picture.url }}" alt="picture" class="">
-        </div>
-    {% endif %}
-    <div class="p-4">
-        <h3 class="text-lg  uppercase">{{ item.title }}</h3>
-        {% if item.description %}
-            <p class="text-sm mt-1">{{ item.description }}</p>
+<a href="{% url "wishitem_detail" item.id %}" class="flex flex-col w-full rounded-none hover:bg-gray-100">
+    <div class="flex justify-center items-center h-[250px] overflow-hidden">
+        {% if item.picture %}
+            <img src="{{ item.picture.url }}" alt="item_picture" class="max-w-full max-h-full object-contain">
         {% endif %}
+    </div>
+
+    <div class="p-4 space-y-2">
+        <h3 class="uppercase">{{ item.title }}</h3>
+        <p class="text-sm">{{ item.get_price }}</p>
     </div>
 </a>
