@@ -10,9 +10,9 @@
 
         {% if not user.is_anonymous %}
             {% if is_following %}
-                {% include "buttons/form_button.html" with url_name="follow_create" id=owner.id text="отписаться" %}
+                {% include "buttons/form_action_button.html" with url_name="follow_create" id=owner.id text="отписаться" %}
             {% else %}
-                {% include "buttons/form_button.html" with url_name="follow_create" id=owner.id text="подписаться" black=True %}
+                {% include "buttons/form_action_button.html" with url_name="follow_create" id=owner.id text="подписаться" black=True %}
             {% endif %}
         {% endif %}
     </div>

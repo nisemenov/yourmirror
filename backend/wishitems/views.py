@@ -115,6 +115,7 @@ class WishItemDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     template_name = "wishitem/delete.html"
     success_url = reverse_lazy("wishlist_me")
     pk_url_kwarg = "wishitem_id"
+    context_object_name = "wishitem"
 
     def test_func(self):
         return self.get_object().profile.user == self.request.user

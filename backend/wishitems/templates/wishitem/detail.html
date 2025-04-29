@@ -28,21 +28,11 @@
                     </button>
 
                     {% if wishitem.reserved.user == request.user %}
-                        <form method="post">
-                            {% csrf_token %}
-                            <button type="submit" class="px-4 py-3 border border-gray-300 rounded-none hover:bg-gray-100 cursor-pointer transition">
-                                отменить бронь
-                            </button>
-                        </form>
+                        {% include "buttons/form_submit_button.html" with text="отменить бронь" %}
                     {% endif %}
                 {% else %}
                     {% if wishitem.profile.user != request.user %}
-                        <form method="post">
-                            {% csrf_token %}
-                            <button type="submit" class="px-4 py-3 bg-gray-900 text-white rounded-none hover:bg-gray-700 cursor-pointer transition">
-                                зарезервировать
-                            </button>
-                        </form>
+                        {% include "buttons/form_submit_button.html" with text="зарезервировать" black=True %}
                     {% endif %}
                 {% endif %}
 
