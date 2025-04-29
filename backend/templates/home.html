@@ -9,7 +9,7 @@
                 Привет, {{ user.first_name|default:"друг" }}!
             </h2>
             <p>
-                yourmirror — минималистичный сервис–вишлист.
+                yourmirror — минималистичный сервис–вишлист
             </p>
             <p>
                 здесь ты можешь:
@@ -33,13 +33,13 @@
     </div>
 
     <div class="px-6">
-        <img src="{{ MEDIA_URL }}common/home/main.png" alt="Список желаний"
+        <img src="{{ MEDIA_URL }}public/home/main.png" alt="Список желаний"
             class="w-sm md:w-md object-contain"
             onmouseover="playSong()"
             onmouseout="pauseSong()">
     </div>
 
-    <audio id="song" src="{{ MEDIA_URL }}common/home/main_song.mp3" preload="auto"></audio>
+    <audio id="song" src="{{ MEDIA_URL }}public/home/main_song.mp3" preload="auto"></audio>
     <script src="{% static 'js/home.js' %}"></script>
 
 </div>
