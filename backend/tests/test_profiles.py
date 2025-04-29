@@ -26,6 +26,7 @@ def test_follow_model():
     assert profile_1.is_following(profile_2) is False
 
 
+# VIEWS
 def test_follow_create_view(client, basic_asserts_reverse):
     user_1, user_2 = UserFactory.create_batch(2)
     profile_1, profile_2 = user_1.profile, user_2.profile
@@ -71,3 +72,31 @@ def test_following_view(client):
     assert response.status_code == 200
     assert "profiles" in response.context
     assert list(response.context["profiles"]) == list(profile_1.following)
+
+
+# ANONYMOUS VIEWS
+@pytest.mark.parametrize(
+    ("url_name", "profile_id"),
+    (
+        (
+            "following",
+            False,
+        ),
+        (
+            "follow_create",
+            True,
+        ),
+        (
+            "settings",
+            False,
+        ),
+    ),
+)
+def test_profile_views_login_req(client, basic_asserts_reverse, url_name, profile_id):
+    profile = UserFactory().profile
+    if profile_id:
+        url = reverse(url_name, kwargs={"profile_id": profile.id})
+    else:
+        url = reverse(url_name)
+    response = client.post(url)
+    basic_asserts_reverse(response, "login")
