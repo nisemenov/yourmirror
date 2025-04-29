@@ -4,41 +4,31 @@
 {% block title %}Подписки{% endblock %}
 
 {% block content %}
-<div class="py-6 px-4 space-y-8">
     {% if profiles.exists %}
-        {% for profile in profiles %}
-        <div class="border border-gray-200 rounded-2xl p-4 shadow-sm space-y-4">
+        <div class="px-6 md:pr-38 py-6 space-y-8">
+            {% for profile in profiles %}
+                <div class="flex flex-col space-y-4">
+                    <a href="{% url "wishlist_profile" profile.id %}" class="hover:bg-gray-200 transition space-y-4">
+                        <h2 class="uppercase">{{ profile.user.first_name }}</h2>
 
-            <div class="flex justify-between items-center">
-                <div>
-                    <a href="{% url "wishlist_profile" profile.id %}" class="text-xl font-semibold">
-                        {{ profile.user.last_name }} {{ profile.user.first_name }}
+                        {% if not profile.wishitems_public.exists %}
+                            <h2 class="text-center uppercase">Этот вишлист пока пуст</h2>
+                        {% endif %}
+
+                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                            {% for item in profile.wishitems_public|slice:":4" %}
+                                <div class="flex justify-center items-center h-[250px] overflow-hidden">
+                                    {% if item.picture %}
+                                        <img src="{{ item.picture.url }}" alt="item_picture" class="max-w-full max-h-full object-contain">
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
                     </a>
                 </div>
-
-                {% if not user.is_anonymous and user.profile != profile %}
-                    {% include "follow_button.html" with profile_id=profile.id is_following=True %}
-                {% endif %}
-            </div>
-
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {% for item in profile.wishitems_public|slice:":3" %}
-                <a href="{% url "wishlist_profile" profile.id %}" class="flex flex-col border border-gray-200 rounded-xl overflow-hidden bg-white">
-                    {% if item.picture %}
-                    <div class="w-full aspect-[4/3] bg-gray-100">
-                        <img src="{{ item.picture.url }}"
-                             alt="picture"
-                             class="w-full h-full object-contain" />
-                    </div>
-                    {% endif %}
-                </a>
-                {% endfor %}
-            </div>
-
+            {% endfor %}
         </div>
-        {% endfor %}
     {% else %}
-    <p class="text-gray-500 text-center">Пока что вы не подписались ни на один вишлист.</p>
+        <h2 class="text-center uppercase">Пока что вы не подписались ни на один вишлист</h2>
     {% endif %}
-</div>
 {% endblock %}

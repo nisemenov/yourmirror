@@ -21,7 +21,9 @@ class ProfileModel(models.Model):
 
     @property
     def following(self):
-        return ProfileModel.objects.filter(following_profiles__follower=self)  # pyright: ignore[reportAttributeAccessIssue]
+        return ProfileModel.objects.filter(following_profiles__follower=self).order_by(
+            "user__first_name"
+        )  # pyright: ignore[reportAttributeAccessIssue]
 
     def is_following(self, other_profile):
         return FollowModel.objects.filter(  # pyright: ignore[reportAttributeAccessIssue]
@@ -60,7 +62,7 @@ class FollowModel(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"<FollowModel {self.profile.user.username} → {self.following.user.username}>"  # pyright: ignore[reportAttributeAccessIssue]
+        return f"<FollowModel {self.follower.user.username} → {self.following.user.username}>"  # pyright: ignore[reportAttributeAccessIssue]
 
 
 @receiver(post_save, sender=User)
