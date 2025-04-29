@@ -6,5 +6,5 @@ function playSong() {
 
 function pauseSong() {
     song.pause(); // Останавливает песню, когда курсор уходит
-    <!-- song.currentTime = 0; // Сбрасывает песню в начало -->
+    song.currentTime = 0; // Сбрасывает песню в начало -->
 }
