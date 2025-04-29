@@ -2,59 +2,54 @@
 {% block title %}{{ wishitem.title }}{% endblock %}
 
 {% block content %}
-<div class="py-6 px-6 max-w-4xl mx-auto space-y-6">
-
-        <a href="{% url "wishlist_profile" wishitem.profile.id %}" class="flex flex-col w-full border border-gray-200  overflow-hidden cursor-pointer">Вернуться к вишлисту</a>
-    <div class="flex gap-6">
+<div class="px-6 py-8">
+    {% include "buttons/base_button.html" with url_name="wishlist_profile" id=wishitem.profile.id text="вернуться к вишлисту" %}
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 pr-32 py-8 justify-items-center items-center">
+    <div class="px-6">
         {% if wishitem.picture %}
-            <img src="{{ wishitem.picture.url }}" alt="{{ wishitem.title }}"
-                 class="w-64 h-auto object-contain border border-gray-200">
+            <img src="{{ wishitem.picture.url }}" alt="item_picture"
+            class="max-w-[300px] max-h-[400px] md:max-w-[400px] md:max-h-[500px] object-contain">
         {% endif %}
-
-        <div class="flex flex-col justify-between flex-1">
-            <div>
-                <h1 class="text-2xl font-bold">{{ wishitem.title }}</h1>
-
-                {% if wishitem.description %}
-                    <p class="mt-2 text-gray-700">{{ wishitem.description }}</p>
-                {% endif %}
-
-                {% if wishitem.link %}
-                    <p class="mt-2">
-                        <a href="{{ wishitem.link }}" class="text-blue-500 underline" target="_blank">
-                            Перейти по ссылке
-                        </a>
-                    </p>
-                {% endif %}
-            </div>
-
-            {% if wishitem.reserved %}
-                <button disabled class="px-4 py-2 bg-gray-300 text-white rounded-xl cursor-not-allowed">
-                    Зарезервировано
-                </button>
-
-                {% if wishitem.reserved.user == request.user %}
-                    <form method="post" class="mt-4">
-                        {% csrf_token %}
-                        <button type="submit" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-xl">
-                            Отменить бронь
-                        </button>
-                {% endif %}
-            {% else %}
-                {% if wishitem.profile.user != request.user %}
-                    <form method="post" class="mt-4">
-                        {% csrf_token %}
-                        <button type="submit" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl">
-                            Зарезервировать
-                        </button>
-                    </form>
-                {% endif %}
+    </div>
+    <div class="place-self-start pr-8 pl-8 md:pl-2">
+        <div class="space-y-2">
+            <h2 class="uppercase">{{ wishitem.title }}</h2>
+            <p class="">{{ wishitem.description }}</p>
+            <p class="text-sm">{{ wishitem.get_price }}</p>
+            {% if wishitem.link %}
+                <a href="{{ wishitem.link }}" class="hover:text-gray-500 transition-all underline" target="_blank">перейти по ссылке</a>
             {% endif %}
 
+            <div class="flex flex-row pt-8 space-x-4">
+                {% if wishitem.reserved %}
+                    <button disabled class="px-4 py-3 bg-gray-300 text-white rounded-none transition cursor-not-allowed">
+                        зарезервировано
+                    </button>
+
+                    {% if wishitem.reserved.user == request.user %}
+                        <form method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="px-4 py-3 border border-gray-300 rounded-none hover:bg-gray-100 cursor-pointer transition">
+                                отменить бронь
+                            </button>
+                        </form>
+                    {% endif %}
+                {% else %}
+                    {% if wishitem.profile.user != request.user %}
+                        <form method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="px-4 py-3 bg-gray-900 text-white rounded-none hover:bg-gray-700 cursor-pointer transition">
+                                зарезервировать
+                            </button>
+                        </form>
+                    {% endif %}
+                {% endif %}
+
             {% if wishitem.profile.user == request.user %}
-                <div class="flex gap-4 mt-4">
-                    <a href="{% url 'wishitem_update' wishitem.id %}" class="text-sm text-gray-600 hover:text-black underline">Редактировать</a>
-                    <a href="{% url 'wishitem_delete' wishitem.id %}" class="text-sm text-red-500 hover:text-black underline">Удалить</a>
+                <div class="space-x-4">
+                    {% include "buttons/base_button.html" with url_name="wishitem_update" id=wishitem.id text="редактировать" %}
+                    <a href="{% url "wishitem_delete" wishitem.id %}" class="px-4 py-3 bg-red-600 text-white rounded-none hover:bg-red-700 transition">удалить</a>
                 </div>
             {% endif %}
         </div>

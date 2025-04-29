@@ -9,7 +9,11 @@
         <h2>вишлист {{ owner.user.first_name }}</h2>
 
         {% if not user.is_anonymous %}
-            {% include "follow_button.html" with profile_id=owner.id is_following=is_following %}
+            {% if is_following %}
+                {% include "buttons/form_button.html" with url_name="follow_create" id=owner.id text="отписаться" %}
+            {% else %}
+                {% include "buttons/form_button.html" with url_name="follow_create" id=owner.id text="подписаться" black=True %}
+            {% endif %}
         {% endif %}
     </div>
 

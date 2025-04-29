@@ -8,6 +8,11 @@
         {% csrf_token %}
         {{ form.non_field_errors }}
         {{ form.as_p }}
+            <!-- {% include "registration/field.html" with field=form.username field_type="email" label="название" %} -->
+            <!-- {% include "registration/field.html" with field=form.username field_type="email" label="ссылка" %} -->
+            <!-- {% include "registration/field.html" with field=form.username field_type="email" label="описание" %} -->
+            <!-- {% include "registration/field.html" with field=form.username field_type="email" label="изоражение" %} -->
+            <!-- {% include "registration/field.html" with field=form.username field_type="email" label="цена" %} -->
 
         <div class="flex gap-4">
             <button type="submit" class="border border-gray-300 px-4 py-2 rounded-xl hover:text-black">

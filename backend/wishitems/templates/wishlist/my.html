@@ -11,7 +11,7 @@
         </div>
     {% else %}
         <div class="pb-6 space-x-4">
-            {% include "main_button.html" with url_name="wishitem_create" text="добавить желание" black=True %}
+            {% include "buttons/base_button.html" with url_name="wishitem_create" text="добавить желание" black=True %}
             {% include "wishlist/share_button.html" %}
         </div>
     {% endif %}

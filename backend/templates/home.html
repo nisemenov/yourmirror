@@ -17,11 +17,11 @@
         </div>
         <div class="pt-8 space-x-4">
             {% if not user.is_authenticated %}
-                {% include "main_button.html" with url_name="register" text="начать" black=True %}
-                {% include "main_button.html" with url_name="login" text="уже есть аккаунт" black=False %}
+                {% include "buttons/base_button.html" with url_name="register" text="начать" black=True %}
+                {% include "buttons/base_button.html" with url_name="login" text="уже есть аккаунт" %}
             {% else %}
-                {% include "main_button.html" with url_name="wishlist_me" text="мой вишлист" black=True %}
-                {% include "main_button.html" with url_name="wishlist_me" text="тг-бот" black=False %}
+                {% include "buttons/base_button.html" with url_name="wishlist_me" text="мой вишлист" black=True %}
+                {% include "buttons/base_button.html" with url_name="wishlist_me" text="тг-бот" black=False %}
             {% endif %}
         </div>
     </div>
