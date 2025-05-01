@@ -347,6 +347,9 @@
   .place-content-center {
     place-content: center;
   }
+  .place-items-center {
+    place-items: center;
+  }
   .items-center {
     align-items: center;
   }
@@ -481,6 +484,9 @@
   .py-12 {
     padding-block: calc(var(--spacing) * 12);
   }
+  .py-20 {
+    padding-block: calc(var(--spacing) * 20);
+  }
   .pt-4 {
     padding-top: calc(var(--spacing) * 4);
   }
@@ -590,6 +596,9 @@
   .text-white {
     color: var(--color-white);
   }
+  .lowercase {
+    text-transform: lowercase;
+  }
   .uppercase {
     text-transform: uppercase;
   }
@@ -644,8 +653,18 @@
     }
   }
   @media (hover: hover) {
+    .hover\:text-gray-300:hover {
+      color: var(--color-gray-300);
+    }
+  }
+  @media (hover: hover) {
     .hover\:text-gray-500:hover {
       color: var(--color-gray-500);
+    }
+  }
+  @media (hover: hover) {
+    .hover\:text-gray-600:hover {
+      color: var(--color-gray-600);
     }
   }
   @media (hover: hover) {

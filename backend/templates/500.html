@@ -1,0 +1,19 @@
+{% load static tailwind_tags %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}yourmirror{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% tailwind_css %}
+</head>
+
+<body class="py-20">
+    <div class="space-y-4 text-center">
+        <h1 class="uppercase">Ошибка сервера</h1>
+        <p class="lowercase">Что-то пошло не так, но мы уже разбираемся</p>
+        <a href="{% url 'home' %}" class="underline transition hover:text-gray-600">вернуться на главную</a>
+    </div>
+</body>
+</html>

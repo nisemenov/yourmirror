@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="py-20">
+    <div class="space-y-4 text-center">
+        <h1 class="uppercase">у вас нет доступа к этой странице</h1>
+        <a href="{% url 'home' %}" class="underline transition hover:text-gray-600">вернуться на главную</a>
+    </div>
+</div>
+{% endblock %}
