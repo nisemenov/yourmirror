@@ -3,6 +3,10 @@
 run-server:
 	uv run --package your_mirror.backend -- python manage.py runserver
 
+.PHONY: static
+static:
+	uv run --package your_mirror.backend -- python manage.py collectstatic
+
 
 # MIGRATIONS
 .PHONY: makemigrations
