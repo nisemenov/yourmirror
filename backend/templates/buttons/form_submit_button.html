@@ -1,11 +1,11 @@
 <form method="post">
     {% csrf_token %}
     {% if black %}
-        <button type="submit" class="px-4 py-3 bg-gray-900 text-white rounded-none hover:bg-gray-700 cursor-pointer transition">
+        <button type="submit" class="px-4 py-3 bg-gray-900 text-white rounded-none hover:bg-gray-700 cursor-pointer transition lowercase">
             {{ text }}
         </button>
     {% else %}
-        <button type="submit" class="px-4 py-3 border border-gray-300 rounded-none hover:bg-gray-100 cursor-pointer transition">
+        <button type="submit" class="px-4 py-3 border border-gray-300 rounded-none hover:bg-gray-100 cursor-pointer transition lowercase">
             {{ text }}
         </button>
     {% endif %}

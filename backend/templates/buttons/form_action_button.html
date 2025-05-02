@@ -1,11 +1,11 @@
 <form method="post" action={% url url_name id %}>
     {% csrf_token %}
     {% if black %}
-        <button class="px-4 py-3 bg-gray-900 text-white rounded-none hover:bg-gray-700 transition cursor-pointer">
+        <button class="px-4 py-3 bg-gray-900 text-white rounded-none hover:bg-gray-700 transition cursor-pointer lowercase">
             {{ text }}
         </button>
     {% else %}
-        <button class="px-4 py-3 border border-gray-300 rounded-none hover:bg-gray-100 transition cursor-pointer">
+        <button class="px-4 py-3 border border-gray-300 rounded-none hover:bg-gray-100 transition cursor-pointer lowercase">
             {{ text }}
         </button>
     {% endif %}
