@@ -1,42 +1,48 @@
 from django import forms
+from django.forms.widgets import ClearableFileInput
+from django.utils.translation import gettext_lazy as _
+
 from .models import WishItemModel
+
+
+BASE_INPUT_CLASS = (
+    "w-full border-b-1 border-gray-300 outline-none caret-black focus:caret-black"
+)
+
+
+class CustomClearableFileInput(ClearableFileInput):
+    template_name = "wishitem/widgets/custom_clearable_file_input.html"
+    clear_checkbox_label = _("Удалить")
 
 
 class WishItemForm(forms.ModelForm):
     class Meta:
         model = WishItemModel
-        fields = [
-            "title",
-            "link",
-            "description",
-            "picture",
-            "price",
-            "price_currency",
-            "is_private",
+        labels = {
+            "title": "Название",
+            "description": "Описание",
+            "link": "Ссылка",
+            "picture": "Изображение",
+            "price": "Цена",
+            "price_currency": "Валюта",
+            "is_private": "сделать приватным",
+        }
+        exclude = [
+            "id",
+            "profile",
+            "reserved",
+            "reserved_at",
+            "created_at",
+            "updated_at",
         ]
         widgets = {
-            "title": forms.TextInput(
-                attrs={"class": "w-full border border-gray-300 rounded-xl p-2"}
-            ),
-            "link": forms.URLInput(
-                attrs={"class": "w-full border border-gray-300 rounded-xl p-2"}
-            ),
-            "description": forms.Textarea(
-                attrs={
-                    "class": "w-full border border-gray-300 rounded-xl p-2",
-                    "rows": 3,
-                }
-            ),
-            "price": forms.TextInput(
-                attrs={"class": "w-full border border-gray-300 rounded-xl p-2"}
-            ),
-            "price_currency": forms.Select(
-                attrs={"class": "w-full border border-gray-300 rounded-xl p-2"}
-            ),
-            "picture": forms.ClearableFileInput(
-                attrs={"class": "w-full border border-gray-300 rounded-xl p-2"}
-            ),
-            "is_private": forms.CheckboxInput(attrs={"class": "mr-2"}),
+            "title": forms.TextInput(attrs={"class": BASE_INPUT_CLASS}),
+            "description": forms.Textarea(attrs={"rows": 2, "class": BASE_INPUT_CLASS}),
+            "link": forms.URLInput(attrs={"class": BASE_INPUT_CLASS}),
+            "picture": CustomClearableFileInput(attrs={"class": BASE_INPUT_CLASS}),
+            "price": forms.TextInput(attrs={"class": BASE_INPUT_CLASS}),
+            "price_currency": forms.Select(attrs={"class": BASE_INPUT_CLASS}),
+            "is_private": forms.CheckboxInput(),
         }
 
     def save(self, commit=True, profile=None):

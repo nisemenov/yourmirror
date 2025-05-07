@@ -1,25 +1,55 @@
 {% extends "base.html" %}
+{% load static %}
 
-{% block title %}{{ form.instance.pk|yesno:"Редактировать,Создать" }} элемент{% endblock %}
+{% block title %}{{ form.instance.title|yesno:"Редактировать,Создать" }} элемент{% endblock %}
 
 {% block content %}
-<div class="py-6 px-6 max-w-xl mx-auto">
-    <form method="post" enctype="multipart/form-data" class="flex flex-col space-y-4">
-        {% csrf_token %}
-        {{ form.non_field_errors }}
-        {{ form.as_p }}
-            <!-- {% include "registration/field.html" with field=form.username field_type="email" label="название" %} -->
-            <!-- {% include "registration/field.html" with field=form.username field_type="email" label="ссылка" %} -->
-            <!-- {% include "registration/field.html" with field=form.username field_type="email" label="описание" %} -->
-            <!-- {% include "registration/field.html" with field=form.username field_type="email" label="изоражение" %} -->
-            <!-- {% include "registration/field.html" with field=form.username field_type="email" label="цена" %} -->
-
-        <div class="flex gap-4">
-            <button type="submit" class="border border-gray-300 px-4 py-2 rounded-xl hover:text-black">
-                Сохранить
-            </button>
-            <a href="{{ cancel_url }}" class="text-gray-500 hover:text-black text-sm underline">Отмена</a>
+<form method="post" enctype="multipart/form-data" class="grid grid-cols-1 md:grid-cols-2 gap-8 pr-32 py-8 justify-items-center items-start">
+    {% csrf_token %}
+    <div class="px-6 w-full">
+        <div class="flex flex-col items-center space-y-4">
+            <div id="drop-zone" class="flex flex-col items-center justify-center text-center w-full h-[300px] border border-dashed border-gray-200 p-6 transition-all">
+                {% if form.instance.picture %}
+                    <img src="{{ form.instance.picture.url }}" alt="item_picture" class="py-2 max-w-full max-h-full object-contain" id="preview">
+                    <p class="w-full text-gray-400 border-t border-gray-200 border-dashed py-2" id="border-sign">
+                        можно перетащить или вставить через ctrl-v
+                    </p>
+                    <div class="hidden text-gray-400" id="plus-sign">
+                        <p class="text-7xl">+</p>
+                        <p>можно перетащить или вставить через ctrl-v</p>
+                    </div>
+                {% else %}
+                    <div class="text-gray-400" id="plus-sign">
+                        <p class="text-7xl">+</p>
+                        <p>можно перетащить или вставить через ctrl-v</p>
+                    </div>
+                    <img src="" alt="" class="hidden max-w-full max-h-full object-contain" id="preview">
+                    <p class="w-full text-gray-400 border-t border-gray-200 border-dashed pt-2 hidden" id="border-sign">
+                        можно перетащить или вставить через ctrl-v
+                    </p>
+                {% endif %}
+            </div>
+            <div class="self-start flex flex-row gap-4">
+                {{ form.picture }}
+                <button type="button" id="clear-preview-button" class="h-13 px-4 bg-red-600 hover:bg-red-700 text-white rounded-none cursor-pointer lowercase transition-colors {% if not form.instance.picture %}hidden{% endif %}" title="удалить изображение">удалить</button>
+            </div>
         </div>
-    </form>
-</div>
+    </div>
+
+    <div class="space-y-4 px-6 w-full">
+        {{ form.non_field_errors }}
+        {% include "wishitem/form_field.html" with field=form.title %}
+        {% include "wishitem/form_field.html" with field=form.description %}
+        {% include "wishitem/form_field.html" with field=form.link %}
+        {% include "wishitem/form_field.html" with field=form.price %}
+        {% include "wishitem/form_field.html" with field=form.price_currency %}
+        {% include "buttons/form_checkbox.html" with field=form.is_private %}
+        <div class="space-x-4">
+            {% include "buttons/form_submit_button.html" with text="Сохранить" %}
+            {% include "buttons/base_button.html" with url_name="wishlist_me" text="Отмена" black=True %}
+        </div>
+    </div>
+</form>
+
+<script src="{% static 'js/wishitem/image_upload.js' %}"></script>
 {% endblock %}
