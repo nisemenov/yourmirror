@@ -4,7 +4,7 @@ from django.urls import reverse
 
 from tests.values import VarStr
 from wishitems.models import WishItemModel
-from wishitems.forms import WishItemForm
+from wishitems.forms import CustomClearableFileInput, WishItemForm
 from tests.factories import UserFactory, WishItemFactory
 
 
@@ -16,8 +16,10 @@ def test_wishitem_form():
     user = UserFactory()
     form_data = {
         "title": VarStr.WISHITEM_TITLE,
-        "link": VarStr.WISHITEM_LINK,
         "description": VarStr.WISHITEM_DESCRIPTION,
+        "link": VarStr.WISHITEM_LINK,
+        "price": "1000",
+        "price_currency": "₽",
         "is_private": True,
     }
     form = WishItemForm(data=form_data)
@@ -25,6 +27,28 @@ def test_wishitem_form():
 
     form.save(profile=user.profile)
     assert len(WishItemModel.objects.filter(profile=user.profile)) == 1
+
+
+def test_wishitem_form_missing_required():
+    form = WishItemForm(data={})
+    assert not form.is_valid()
+    assert "title" in form.errors
+
+
+def test_wishitem_form_invalid_url():
+    form_data = {
+        "title": VarStr.WISHITEM_TITLE,
+        "link": "not-a-url",
+    }
+    form = WishItemForm(data=form_data)
+    assert not form.is_valid()
+    assert "link" in form.errors
+
+
+def test_custom_clearable_file_input():
+    widget = CustomClearableFileInput()
+    assert "custom_clearable_file_input" in widget.template_name
+    assert str(widget.clear_checkbox_label) == "Удалить"
 
 
 # VIEWS
