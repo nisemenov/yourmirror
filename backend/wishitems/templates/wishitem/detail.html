@@ -39,7 +39,7 @@
             {% if wishitem.profile.user == request.user %}
                 <div class="space-x-4">
                     {% include "buttons/base_button.html" with url_name="wishitem_update" id=wishitem.id text="редактировать" %}
-                    <a href="{% url "wishitem_delete" wishitem.id %}" class="px-4 py-3 bg-red-600 text-white rounded-none hover:bg-red-700 transition">удалить</a>
+                    <a href="{% url "wishitem_delete" wishitem.id %}" class="px-4 py-4 bg-red-600 text-white rounded-none hover:bg-red-700 transition">удалить</a>
                 </div>
             {% endif %}
         </div>

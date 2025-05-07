@@ -1,13 +1,13 @@
 {% if black %}
     {% if id %}
-        <a href={% url url_name id %} class="px-4 py-3 bg-gray-900 text-white rounded-none hover:bg-gray-700 transition lowercase">{{ text }}</a>
+        <a href={% url url_name id %} class="px-4 py-4 bg-gray-900 text-white rounded-none hover:bg-gray-700 transition lowercase">{{ text }}</a>
     {% else %}
-        <a href={% url url_name %} class="px-4 py-3 bg-gray-900 text-white rounded-none hover:bg-gray-700 transition lowercase">{{ text }}</a>
+        <a href={% url url_name %} class="px-4 py-4 bg-gray-900 text-white rounded-none hover:bg-gray-700 transition lowercase">{{ text }}</a>
     {% endif %}
 {% else %}
     {% if id %}
-        <a href={% url url_name id %} class="px-4 py-3 border border-gray-300 rounded-none hover:bg-gray-100 transition lowercase">{{ text }}</a>
+        <a href={% url url_name id %} class="px-4 py-4 border border-gray-200 rounded-none hover:bg-gray-100 transition lowercase">{{ text }}</a>
     {% else %}
-        <a href={% url url_name %} class="px-4 py-3 border border-gray-300 rounded-none hover:bg-gray-100 transition lowercase">{{ text }}</a>
+        <a href={% url url_name %} class="px-4 py-4 border border-gray-200 rounded-none hover:bg-gray-100 transition lowercase">{{ text }}</a>
     {% endif %}
 {% endif %}
