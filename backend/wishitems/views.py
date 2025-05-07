@@ -22,6 +22,16 @@ class WishlistMyView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return self.request.user.profile.wishitems.all()
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        share_url = self.request.build_absolute_uri(
+            reverse(
+                "wishlist_profile", kwargs={"profile_id": self.request.user.profile.id}
+            )
+        )
+        context["share_url"] = share_url
+        return context
+
 
 class WishlistProfileView(ListView):
     template_name = "wishlist/profile.html"

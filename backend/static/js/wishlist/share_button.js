@@ -14,11 +14,11 @@ shareButton.addEventListener('click', () => {
 });
 
 copyLinkButton.addEventListener('click', () => {
-    navigator.clipboard.writeText(window.location.href);
+    const shareUrl = shareButton.dataset.shareUrl;
+    navigator.clipboard.writeText(shareUrl);
     shareOptions.classList.add('hidden');
     linkCopied.classList.remove('hidden');
 
-    // авто-закрытие через 3 секунды
     autoCloseTimeout = setTimeout(() => {
         shareModal.classList.add('hidden');
     }, 3000);

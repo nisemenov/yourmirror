@@ -1,6 +1,6 @@
 {% load static %}
 
-<button id="share-button" class="inline-block px-4 py-4 border border-gray-200 rounded-none hover:bg-gray-100 transition cursor-pointer leading-[1.15]">
+<button id="share-button" data-share-url="{{ share_url }}" class="inline-block px-4 py-4 border border-gray-200 rounded-none hover:bg-gray-100 transition cursor-pointer leading-[1.15]">
     поделиться
 </button>
 
@@ -12,7 +12,7 @@
                 скопировать ссылку
             </button>
 
-            <a href="https://t.me/share/url?url={{ request.build_absolute_uri|urlencode }}" target="_blank"
+            <a href="https://t.me/share/url?url={{ share_url|urlencode }}" target="_blank"
                class="block w-full px-4 py-3 border border-gray-200 rounded-none hover:bg-gray-100 transition text-sm uppercase text-center">
                 телеграм
             </a>
