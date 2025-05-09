@@ -1,0 +1,16 @@
+<div class="block">
+  <label for="{{ field.id_for_label }}" class="text-sm text-gray-600">{{ label }}</label>
+  <div class="mt-2">
+    <input
+      type="{{ field_type }}"
+      name="{{ field.name }}"
+      id="{{ field.id_for_label }}"
+      value="{{ field.value|default:'' }}"
+      class="w-full border-b border-black outline-none py-3 caret-black bg-transparent text-gray-800 disabled:text-gray-400"
+      disabled
+    >
+  </div>
+  {% if field.errors %}
+    <p class="text-red-500 text-sm mt-1">{{ field.errors.0 }}</p>
+  {% endif %}
+</div>

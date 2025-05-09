@@ -14,8 +14,8 @@
 
         <form method="post" class="space-y-8 text-gray-800">
             {% csrf_token %}
-            {% include "registration/field.html" with field=form.username field_type="email" label="Почта" %}
-            {% include "registration/field.html" with field=form.password field_type="password" label="Пароль" %}
+            {% include "registration/form_field.html" with field=form.username field_type="email" label="Почта" %}
+            {% include "registration/form_field.html" with field=form.password field_type="password" label="Пароль" %}
 
             <div class="flex items-center justify-between">
                 <div class="flex items-center">

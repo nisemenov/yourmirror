@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Настройки{% endblock %}
+
+{% block content %}
+<form method="post" class="max-w-xl mx-auto py-8 space-y-6">
+    {% csrf_token %}
+    <div class="space-y-4 uppercase">
+        <p>Данные пользователя</p>
+        {% include "settings/form_field.html" with field=form.first_name field_type="text" label="Имя" %}
+        {% include "settings/form_field.html" with field=form.email field_type="email" label="Email" %}
+        <p>Смена пароля</p>
+        {% include "settings/form_field.html" with field=form.current_password field_type="password" label="Текущий пароль" %}
+        {% include "settings/form_field.html" with field=form.new_password1 field_type="password" label="Новый пароль" %}
+        {% include "settings/form_field.html" with field=form.new_password2 field_type="password" label="Повторите пароль" %}
+    </div>
+
+    <div class="pt-8 space-x-4">
+        <a
+            href={% url "settings" %}
+            id="enable-edit"
+            class="px-4 py-4 bg-gray-900 text-white rounded-none hover:bg-gray-700 transition lowercase"
+        >редактировать</a>
+        <a
+            href={% url "settings" %}
+            id="cancel-edit"
+            class="px-4 py-4 bg-gray-900 text-white rounded-none hover:bg-gray-700 transition lowercase hidden"
+        >отмена</a>
+        <button
+            type="submit"
+            id="save-edit"
+            class="px-4 py-3 border border-gray-200 rounded-none hover:bg-gray-100 cursor-pointer transition lowercase hidden"
+        >
+            сохранить
+        </button>
+    </div>
+</form>
+
+<script src="{% static 'js/user_settings.js' %}"></script>
+{% endblock %}

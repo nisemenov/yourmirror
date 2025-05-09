@@ -1,4 +1,4 @@
-from django.contrib.auth import login
+from django.contrib.auth import login, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
@@ -8,7 +8,7 @@ from django.views.generic import ListView
 from profiles.models import FollowModel, ProfileModel
 from telewish.settings import LOGIN_REMEMBER_ME
 
-from .forms import EmailRegistrationForm
+from .forms import EmailRegistrationForm, UserSettingsForm
 
 
 class CustomLoginView(LoginView):
@@ -61,4 +61,20 @@ class FollowCreateView(LoginRequiredMixin, ListView):
 
 @login_required
 def settings(request):
-    return render(request, "settings.html")
+    user = request.user
+    if request.method == "POST":
+        form = UserSettingsForm(request.POST, user=user)
+        if form.is_valid():
+            form.save()
+            update_session_auth_hash(request, user)
+            return redirect("settings")
+    else:
+        form = UserSettingsForm(
+            user=user,
+            initial={
+                "email": user.email,
+                "first_name": user.first_name,
+                "telegram_id": getattr(user.profile, "telegram_id", ""),
+            },
+        )
+    return render(request, "settings/main.html", {"form": form})
