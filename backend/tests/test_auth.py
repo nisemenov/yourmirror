@@ -17,8 +17,8 @@ def test_register_view(client, basic_asserts_reverse):
     data = {
         "email": VarStr.USER_EMAIL,
         "first_name": VarStr.USER_NAME,
-        "password1": VarStr.USER_PASSWORD1,
-        "password2": VarStr.USER_PASSWORD2,
+        "password1": VarStr.USER_PASSWORD,
+        "password2": VarStr.USER_PASSWORD,
     }
     response = client.post(url, data)
     basic_asserts_reverse(response, "wishlist_me")
@@ -42,8 +42,8 @@ def test_login_view(client, basic_asserts_reverse):
 def test_email_registration_form_valid():
     form_data = {
         "email": VarStr.USER_EMAIL,
-        "password1": VarStr.USER_PASSWORD1,
-        "password2": VarStr.USER_PASSWORD2,
+        "password1": VarStr.USER_PASSWORD,
+        "password2": VarStr.USER_PASSWORD,
     }
     form = EmailRegistrationForm(data=form_data)
     assert form.is_valid()
