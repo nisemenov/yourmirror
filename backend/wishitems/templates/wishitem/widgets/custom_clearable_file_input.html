@@ -1,5 +1,4 @@
 <div class="flex flex-col space-y-4">
-    <label for="{{ widget.attrs.id }}" class="px-4 py-3 border border-gray-200 rounded-none hover:bg-gray-100 cursor-pointer transition lowercase">загрузить</label>
     <input type="file" name="{{ widget.name }}" id="{{ widget.attrs.id }}" class="hidden" {% include "django/forms/widgets/attrs.html" %}>
 
     {% if widget.is_initial %}

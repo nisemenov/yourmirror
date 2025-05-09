@@ -55,16 +55,13 @@ document.addEventListener("DOMContentLoaded", function () {
     // Drag'n'Drop
     dropZone.addEventListener("dragover", function (e) {
         e.preventDefault();
-        dropZone.classList.add("bg-gray-100", "border-gray-500");
     });
 
     dropZone.addEventListener("dragleave", function () {
-        dropZone.classList.remove("bg-gray-100", "border-gray-500");
     });
 
     dropZone.addEventListener("drop", function (e) {
         e.preventDefault();
-        dropZone.classList.remove("bg-gray-100", "border-gray-500");
 
         if (e.dataTransfer.files.length > 0) {
             const file = e.dataTransfer.files[0];
@@ -73,6 +70,11 @@ document.addEventListener("DOMContentLoaded", function () {
             fileInput.files = dataTransfer.files;
             updatePreview(file);
         }
+    });
+
+    // Сделать зону кликабельной
+    dropZone.addEventListener("click", function () {
+        fileInput.click();
     });
 
     // Вставка из буфера обмена
