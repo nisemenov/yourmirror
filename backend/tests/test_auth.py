@@ -16,12 +16,16 @@ def test_register_view(client, basic_asserts_reverse):
     url = reverse("register")
     data = {
         "email": VarStr.USER_EMAIL,
+        "first_name": VarStr.USER_NAME,
         "password1": VarStr.USER_PASSWORD1,
         "password2": VarStr.USER_PASSWORD2,
     }
     response = client.post(url, data)
     basic_asserts_reverse(response, "wishlist_me")
-    assert ProfileModel.objects.filter(user__username=VarStr.USER_EMAIL).exists()
+    assert ProfileModel.objects.filter(
+        user__first_name=VarStr.USER_NAME,
+        user__username=VarStr.USER_EMAIL,
+    ).exists()
 
 
 def test_login_view(client, basic_asserts_reverse):
