@@ -14,10 +14,10 @@
 
         <form method="post" class="space-y-8 text-gray-800">
             {% csrf_token %}
+            {% include "registration/field.html" with field=form.first_name field_type="first_name" label="Имя" %}
             {% include "registration/field.html" with field=form.email field_type="email" label="Почта" %}
             {% include "registration/field.html" with field=form.password1 field_type="password" label="Пароль" %}
             {% include "registration/field.html" with field=form.password2 field_type="password" label="Подтверждение пароля" %}
-            {% include "registration/field.html" with field=form.first_name field_type="first_name" label="Имя" %}
 
             <div>
                 <button type="submit" class="w-full bg-black text-white py-4 px-4 rounded-none hover:bg-gray-700 focus:outline-none focus:ring-0 uppercase">

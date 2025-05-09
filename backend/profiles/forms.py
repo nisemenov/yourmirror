@@ -10,9 +10,9 @@ class EmailRegistrationForm(UserCreationForm):
         model = User
         fields = (
             "email",
+            "first_name",
             "password1",
             "password2",
-            "first_name",
         )
 
     def save(self, commit=True):

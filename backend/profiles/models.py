@@ -38,6 +38,15 @@ class ProfileModel(models.Model):
         return f"<ProfileModel {self.user.username} / {self.user.first_name}>"
 
 
+@receiver(post_save, sender=User)
+def user_post_save(sender, instance: User, created: bool, **kwargs):
+    if created:
+        profile_kwargs = {}
+
+        profile = ProfileModel(user=instance, **profile_kwargs)
+        profile.save()
+
+
 class FollowModel(models.Model):
     follower = models.ForeignKey(
         ProfileModel,
@@ -63,12 +72,3 @@ class FollowModel(models.Model):
 
     def __str__(self):
         return f"<FollowModel {self.follower.user.username} → {self.following.user.username}>"  # pyright: ignore[reportAttributeAccessIssue]
-
-
-@receiver(post_save, sender=User)
-def user_post_save(sender, instance: User, created: bool, **kwargs):
-    if created:
-        profile_kwargs = {}
-
-        profile = ProfileModel(user=instance, **profile_kwargs)
-        profile.save()
