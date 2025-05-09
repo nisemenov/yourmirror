@@ -45,7 +45,8 @@
 - Поля:
   - `title`, `description`, `link`, `picture`
   - `profile` (FK на `ProfileModel`)
-  - `is_private`, `reserved` — bool
+  - `is_private` — bool
+  - `reserved` (FK на `ProfileModel`)
 
 ## Аутентификация
 
