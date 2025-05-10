@@ -12,7 +12,7 @@ dependencies = [
 ]
 
 [tool.uv]
-default-groups = ["dev", "test"]
+default-groups = ["dev", "test", "lint"]
 
 [dependency-groups]
 test = [
@@ -23,6 +23,9 @@ test = [
 dev = [
     "cookiecutter>=2.6.0",
     "django-tailwind[reload]>=4.0.1",
+]
+lint = [
+    "django-stubs[compatible-mypy]>=5.2.0",
 ]
 
 [tool.pytest.ini_options]
@@ -36,3 +39,20 @@ filterwarnings = [
 ignore = [
   "tests/factories.py"
 ]
+
+[tool.mypy]
+mypy_path = "$MYPY_CONFIG_FILE_DIR"
+plugins = ["mypy_django_plugin.main"]
+
+show_error_codes = true
+strict = true
+warn_unused_configs = true
+
+[[tool.mypy.overrides]]
+module = [
+    "environ",
+]
+ignore_missing_imports = true
+
+[tool.django-stubs]
+django_settings_module = "telewish.settings"

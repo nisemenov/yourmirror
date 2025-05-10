@@ -13,12 +13,10 @@ dependencies = [
 ]
 
 [tool.uv]
-default-groups = ["lint"]
+default-groups = []
 
 [dependency-groups]
-lint = [
-    "mypy>=1.15.0",
-]
+lint = []
 
 [tool.mypy]
 ignore_missing_imports = true

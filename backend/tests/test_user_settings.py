@@ -1,19 +1,27 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Callable, cast
+
 import pytest
-from django.urls import reverse
-from django.contrib.auth import get_user_model
+
 from django.contrib.auth import SESSION_KEY
+from django.contrib.auth.models import User
+from django.urls import reverse
 
 from tests.factories import UserFactory
 from tests.values import VarStr
 
-pytestmark = pytest.mark.django_db
 
-User = get_user_model()
+if TYPE_CHECKING:
+    from django.test import Client
+
+
+pytestmark = pytest.mark.django_db
 
 
 # VIEW
-def test_render_view(client, basic_asserts_template):
-    user = UserFactory()
+def test_render_view(client: Client, basic_asserts_template: Callable) -> None:
+    user = cast(User, UserFactory())
     client.force_login(user)
 
     response = client.get(reverse("settings"))
@@ -22,11 +30,14 @@ def test_render_view(client, basic_asserts_template):
     assert "form" in response.context
 
 
-# FORMS
-def test_update_user_data(client, basic_asserts_reverse):
-    user = UserFactory(
-        email=VarStr.USER_EMAIL,
-        first_name=VarStr.USER_NAME,
+# FORM
+def test_update_user_data(client: Client, basic_asserts_reverse: Callable) -> None:
+    user = cast(
+        User,
+        UserFactory(
+            email=VarStr.USER_EMAIL,
+            first_name=VarStr.USER_NAME,
+        ),
     )
     client.force_login(user)
 
@@ -44,8 +55,8 @@ def test_update_user_data(client, basic_asserts_reverse):
     assert user.first_name == "new_first_name"
 
 
-def test_password_change(client, basic_asserts_reverse):
-    user = UserFactory()
+def test_password_change(client: Client, basic_asserts_reverse: Callable) -> None:
+    user = cast(User, UserFactory())
     user.set_password(VarStr.USER_PASSWORD)
     user.save()
     client.force_login(user)
@@ -69,9 +80,9 @@ def test_password_change(client, basic_asserts_reverse):
     assert SESSION_KEY in session
 
 
-def test_duplicate_email(client, basic_asserts_template):
+def test_duplicate_email(client: Client, basic_asserts_template: Callable) -> None:
     UserFactory(email="existing@mail.com")
-    user = UserFactory(email=VarStr.USER_EMAIL)
+    user = cast(User, UserFactory(email=VarStr.USER_EMAIL))
     client.force_login(user)
 
     response = client.post(
@@ -104,14 +115,14 @@ def test_duplicate_email(client, basic_asserts_template):
     ),
 )
 def test_wrong_password(
-    client,
-    basic_asserts_template,
-    current_password,
-    new_password1,
-    new_password2,
-    word,
+    client: Client,
+    basic_asserts_template: Callable,
+    current_password: str,
+    new_password1: str,
+    new_password2: str,
+    word: str,
 ):
-    user = UserFactory()
+    user = cast(User, UserFactory())
     user.set_password(VarStr.USER_PASSWORD)
     user.save()
     client.force_login(user)

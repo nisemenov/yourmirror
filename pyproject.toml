@@ -16,6 +16,7 @@ test = [
     "pytest>=8.3.4",
 ]
 lint = [
+    "mypy>=1.15.0",
     "pre-commit>=4.1.0",
     "ruff>=0.9.6",
 ]

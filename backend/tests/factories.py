@@ -1,3 +1,4 @@
+from typing import cast
 import factory
 from factory.declarations import Sequence, LazyAttribute
 from faker import Faker
@@ -34,6 +35,6 @@ class WishItemFactory(factory.django.DjangoModelFactory):
     description = factory.Faker("text", max_nb_chars=100, locale="ru_RU")
     link = factory.Faker("url")
 
-    profile = factory.LazyAttribute(lambda _: UserFactory().profile)
+    profile = factory.LazyAttribute(lambda _: cast(User, UserFactory()).profile)
 
     is_private = factory.Faker("boolean")
