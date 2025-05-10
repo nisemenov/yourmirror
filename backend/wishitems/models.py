@@ -1,3 +1,4 @@
+from typing import Any
 import uuid
 
 from django.db.models.signals import pre_save, post_delete
@@ -8,7 +9,7 @@ from django.db import models
 from profiles.models import ProfileModel
 
 
-def upload_to_wishlist(instance, filename):
+def upload_to_wishlist(instance: "WishItemModel", filename: str) -> str:
     ext = filename.split(".")[-1]
     return f"wishitems/picture/{uuid.uuid4()}.{ext}"
 
@@ -48,15 +49,17 @@ class WishItemModel(models.Model):
         ordering = ["title"]
 
     @property
-    def get_price(self):
+    def get_price(self) -> str:
         return self.price + " " + self.price_currency
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"<WishItemModel {self.title}>"
 
 
 @receiver(pre_save, sender=WishItemModel)
-def delete_old_picture_on_update(sender, instance, **kwargs):
+def delete_old_picture_on_update(
+    sender: WishItemModel, instance: WishItemModel, **kwargs: Any
+) -> None:
     if not instance.pk:
         return
 
@@ -71,7 +74,9 @@ def delete_old_picture_on_update(sender, instance, **kwargs):
 
 
 @receiver(post_delete, sender=WishItemModel)
-def delete_picture_on_delete(sender, instance, **kwargs):
+def delete_picture_on_delete(
+    sender: WishItemModel, instance: WishItemModel, **kwargs: Any
+) -> None:
     pic = instance.picture
     if pic and pic.storage.exists(pic.name):
         pic.delete(save=False)

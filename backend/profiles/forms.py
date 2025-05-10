@@ -1,10 +1,12 @@
+from typing import Any, cast
+
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.db.models import Q
 
 
-class EmailRegistrationForm(UserCreationForm):
+class EmailRegistrationForm(UserCreationForm):  # type: ignore[type-arg]
     email = forms.EmailField(required=True)
 
     class Meta:  # pyright: ignore
@@ -16,15 +18,15 @@ class EmailRegistrationForm(UserCreationForm):
             "password2",
         )
 
-    def save(self, commit=True):
+    def save(self, commit: bool = True) -> User:
         user = super().save(commit=False)
         user.username = self.cleaned_data["email"]
         if commit:
             user.save()
-        return user
+        return cast(User, user)
 
 
-class UserSettingsForm(forms.ModelForm):
+class UserSettingsForm(forms.ModelForm):  # type: ignore[type-arg]
     email = forms.EmailField(required=True)
     # telegram_id = forms.CharField(required=False)
 
@@ -42,19 +44,19 @@ class UserSettingsForm(forms.ModelForm):
         model = User
         fields = ("email", "first_name")
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         self.user = kwargs.pop("user")
         super().__init__(*args, **kwargs)
         # self.fields["telegram_id"].initial = getattr(self.user.profile, "telegram_id", "")
 
-    def clean_email(self):
+    def clean_email(self) -> str:
         email = self.cleaned_data["email"]
         if User.objects.filter(Q(email=email) & ~Q(pk=self.user.pk)).exists():
             raise forms.ValidationError("Пользователь с таким email уже существует")
-        return email
+        return cast(str, email)
 
-    def clean(self):
-        cleaned_data = super().clean()
+    def clean(self) -> dict[str, Any]:
+        cleaned_data = super().clean() or {}
         p1 = cleaned_data.get("new_password1")
         p2 = cleaned_data.get("new_password2")
         if p1 or p2:
@@ -66,7 +68,7 @@ class UserSettingsForm(forms.ModelForm):
                 self.add_error("new_password2", "Пароли не совпадают")
         return cleaned_data
 
-    def save(self, commit=True):
+    def save(self, commit: bool = True) -> User:
         user = self.user
         user.email = self.cleaned_data["email"]
         user.first_name = self.cleaned_data["first_name"]
@@ -77,4 +79,4 @@ class UserSettingsForm(forms.ModelForm):
             user.save()
             # user.profile.telegram_id = self.cleaned_data["telegram_id"]
             # user.profile.save()
-        return user
+        return cast(User, user)

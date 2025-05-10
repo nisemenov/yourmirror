@@ -28,20 +28,20 @@ repos:
     hooks:
       - id: codespell
         args: ["--toml", "./pyproject.toml"]
-  # - repo: https://github.com/pre-commit/mirrors-mypy
-  #   rev: "v1.15.0"
-  #   hooks:
-  #     - id: mypy
-  #       name: mypy-backend
-  #       files: ^backend/
-  #       additional_dependencies:
-  #         [
-  #           "django-environ>=0.12.0",
-  #           "django-minio-storage>=0.5.7",
-  #           "django-stubs[compatible-mypy]>=5.2.0",
-  #           "django-tailwind[reload]>=4.0.1",
-  #           "factory-boy>=3.3.3",
-  #           "psycopg2-binary>=2.9.10",
-  #           "pytest>=8.3.4",
-  #         ]
-  #       args: ["--config-file", "./backend/pyproject.toml"]
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: "v1.15.0"
+    hooks:
+      - id: mypy
+        name: mypy-backend
+        files: ^backend/
+        additional_dependencies:
+          [
+            "django-environ>=0.12.0",
+            "django-minio-storage>=0.5.7",
+            "django-stubs[compatible-mypy]>=5.2.0",
+            "django-tailwind[reload]>=4.0.1",
+            "factory-boy>=3.3.3",
+            "psycopg2-binary>=2.9.10",
+            "pytest>=8.3.4",
+          ]
+        args: ["--config-file", "./backend/pyproject.toml"]
