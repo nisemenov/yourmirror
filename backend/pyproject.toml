@@ -54,5 +54,14 @@ module = [
 ]
 ignore_missing_imports = true
 
+[[tool.mypy.overrides]]
+module = [
+    "tests.*",
+    "wishitems.*",
+    "fill_fixtures",
+    "manage",
+]
+ignore_errors = true
+
 [tool.django-stubs]
 django_settings_module = "telewish.settings"

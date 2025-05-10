@@ -4,7 +4,7 @@ register = template.Library()
 
 
 @register.simple_tag(takes_context=True)
-def is_active_url(context, url_name):
+def is_active_url(context: template.RequestContext, url_name: str) -> str:
     request = context["request"]
     return (
         "text-black"
