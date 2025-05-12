@@ -1,6 +1,4 @@
-from typing import cast
 import factory
-from factory.declarations import Sequence, LazyAttribute
 from faker import Faker
 
 from django.contrib.auth.models import User
@@ -12,13 +10,13 @@ from wishitems.models import WishItemModel
 fake = Faker()
 
 
-class UserFactory(factory.django.DjangoModelFactory):
+class UserFactory(factory.django.DjangoModelFactory[User]):
     class Meta:
         model = User
         skip_postgeneration_save = True  # for DeprecationWarning
 
-    username = Sequence(lambda n: f"user_{n}")
-    email = LazyAttribute(lambda o: f"{o.username}@example.com")
+    username = factory.Sequence(lambda n: f"user_{n}")
+    email = factory.LazyAttribute(lambda o: f"{o.username}@example.com")
     password = factory.django.Password("testpass123")
 
 
@@ -27,7 +25,7 @@ def faker_image_file():
     return ContentFile(image_bytes, "faker.png")
 
 
-class WishItemFactory(factory.django.DjangoModelFactory):
+class WishItemFactory(factory.django.DjangoModelFactory[WishItemModel]):
     class Meta:
         model = WishItemModel
 
@@ -35,6 +33,6 @@ class WishItemFactory(factory.django.DjangoModelFactory):
     description = factory.Faker("text", max_nb_chars=100, locale="ru_RU")
     link = factory.Faker("url")
 
-    profile = factory.LazyAttribute(lambda _: cast(User, UserFactory()).profile)
+    profile = factory.LazyAttribute(lambda _: UserFactory().profile)
 
     is_private = factory.Faker("boolean")

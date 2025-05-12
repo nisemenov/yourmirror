@@ -4,5 +4,5 @@ from wishitems.models import WishItemModel
 
 
 @admin.register(WishItemModel)
-class WishItemAdmin(admin.ModelAdmin):
+class WishItemAdmin(admin.ModelAdmin):  # type: ignore[type-arg]
     pass

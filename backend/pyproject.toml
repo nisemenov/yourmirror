@@ -54,11 +54,16 @@ module = [
 ]
 ignore_missing_imports = true
 
+# для игнора вызова всех фабрик
 [[tool.mypy.overrides]]
 module = [
     "tests.*",
-    "wishitems.*",
-    "fill_fixtures",
+]
+disable_error_code = ["no-untyped-call"]
+
+[[tool.mypy.overrides]]
+module = [
+    "tests.factories",
     "manage",
 ]
 ignore_errors = true

@@ -1,6 +1,8 @@
+from typing import cast
 from django import forms
 from django.forms.widgets import ClearableFileInput
-from django.utils.translation import gettext_lazy as _
+
+from profiles.models import ProfileModel
 
 from .models import WishItemModel
 
@@ -12,10 +14,9 @@ BASE_INPUT_CLASS = (
 
 class CustomClearableFileInput(ClearableFileInput):
     template_name = "wishitem/widgets/custom_clearable_file_input.html"
-    clear_checkbox_label = _("Удалить")
 
 
-class WishItemForm(forms.ModelForm):
+class WishItemForm(forms.ModelForm):  # type: ignore[type-arg]
     class Meta:
         model = WishItemModel
         labels = {
@@ -45,10 +46,14 @@ class WishItemForm(forms.ModelForm):
             "is_private": forms.CheckboxInput(),
         }
 
-    def save(self, commit=True, profile=None):
+    def save(
+        self,
+        commit: bool = True,
+        profile: ProfileModel | None = None,
+    ) -> WishItemModel:
         instance = super().save(commit=False)
         if profile:
             instance.profile = profile
         if commit:
             instance.save()
-        return instance
+        return cast(WishItemModel, instance)

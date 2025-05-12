@@ -1,19 +1,29 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, cast
+
 import pytest
 
 from django.urls import reverse
+from django.contrib.auth.models import User
+from django.http import HttpResponse, HttpResponseRedirect
 
 from tests.values import VarStr
 from wishitems.models import WishItemModel
 from wishitems.forms import CustomClearableFileInput, WishItemForm
 from tests.factories import UserFactory, WishItemFactory
 
+if TYPE_CHECKING:
+    from django.test import Client
+    from tests.conftest import BasicAssertsTemplate, BasicAssertsReverse
+
 
 pytestmark = pytest.mark.django_db
 
 
 # FORMS
-def test_wishitem_form():
-    user = UserFactory()
+def test_wishitem_form() -> None:
+    user = cast(User, UserFactory())
     form_data = {
         "title": VarStr.WISHITEM_TITLE,
         "description": VarStr.WISHITEM_DESCRIPTION,
@@ -29,13 +39,13 @@ def test_wishitem_form():
     assert len(WishItemModel.objects.filter(profile=user.profile)) == 1
 
 
-def test_wishitem_form_missing_required():
+def test_wishitem_form_missing_required() -> None:
     form = WishItemForm(data={})
     assert not form.is_valid()
     assert "title" in form.errors
 
 
-def test_wishitem_form_invalid_url():
+def test_wishitem_form_invalid_url() -> None:
     form_data = {
         "title": VarStr.WISHITEM_TITLE,
         "link": "not-a-url",
@@ -45,83 +55,109 @@ def test_wishitem_form_invalid_url():
     assert "link" in form.errors
 
 
-def test_custom_clearable_file_input():
+def test_custom_clearable_file_input() -> None:
     widget = CustomClearableFileInput()
     assert "custom_clearable_file_input" in widget.template_name
-    assert str(widget.clear_checkbox_label) == "Удалить"
 
 
 # VIEWS
-def test_wishlist_my_empty_view(client, basic_asserts_template):
-    user = UserFactory()
+def test_wishlist_my_empty_view(
+    client: Client, basic_asserts_template: BasicAssertsTemplate
+) -> None:
+    user = cast(User, UserFactory())
     client.force_login(user)
     url = reverse("wishlist_me")
     response = client.get(url)
-    basic_asserts_template(response, VarStr.WISHILIST_MY_EMPTY)
+    basic_asserts_template(cast(HttpResponse, response), VarStr.WISHILIST_MY_EMPTY)
 
 
-def test_wishlist_profile_empty_view(client, basic_asserts_template):
+def test_wishlist_profile_empty_view(
+    client: Client, basic_asserts_template: BasicAssertsTemplate
+) -> None:
     user_1, user_2 = UserFactory.create_batch(2)
     client.force_login(user_2)
     url = reverse("wishlist_profile", kwargs={"profile_id": user_1.profile.id})
     response = client.get(url)
-    basic_asserts_template(response, VarStr.WISHILIST_PROFILE_EMPTY)
+    basic_asserts_template(cast(HttpResponse, response), VarStr.WISHILIST_PROFILE_EMPTY)
 
 
-def test_wishlist_my_view(client, basic_asserts_template):
-    user = UserFactory()
-    WishItemFactory(
-        title=VarStr.WISHITEM_TITLE,
-        profile=user.profile,
+def test_wishlist_my_view(
+    client: Client, basic_asserts_template: BasicAssertsTemplate
+) -> None:
+    user = cast(User, UserFactory())
+    cast(
+        WishItemModel,
+        WishItemFactory(
+            title=VarStr.WISHITEM_TITLE,
+            profile=user.profile,
+        ),
     )
     client.force_login(user)
     response = client.get(reverse("wishlist_me"))
-    basic_asserts_template(response, VarStr.WISHITEM_TITLE)
+    basic_asserts_template(cast(HttpResponse, response), VarStr.WISHITEM_TITLE)
 
 
-def test_wishlist_profile_view(client, basic_asserts_template):
+def test_wishlist_profile_view(
+    client: Client, basic_asserts_template: BasicAssertsTemplate
+) -> None:
     user_1, user_2 = UserFactory.create_batch(2)
-    WishItemFactory(
-        title=VarStr.WISHITEM_TITLE,
-        profile=user_1.profile,
-        is_private=False,
+    cast(
+        WishItemModel,
+        WishItemFactory(
+            title=VarStr.WISHITEM_TITLE,
+            profile=user_1.profile,
+            is_private=False,
+        ),
     )
 
     client.force_login(user_2)
     url = reverse("wishlist_profile", kwargs={"profile_id": user_1.profile.id})
     response = client.get(url)
-    basic_asserts_template(response, VarStr.WISHITEM_TITLE)
+    basic_asserts_template(cast(HttpResponse, response), VarStr.WISHITEM_TITLE)
 
 
-def test_wishlist_profile_with_private_view(client, basic_asserts_template):
+def test_wishlist_profile_with_private_view(
+    client: Client, basic_asserts_template: BasicAssertsTemplate
+) -> None:
     user_1, user_2 = UserFactory.create_batch(2)
-    WishItemFactory(
-        profile=user_1.profile,
-        is_private=True,
+    cast(
+        WishItemModel,
+        WishItemFactory(
+            profile=user_1.profile,
+            is_private=True,
+        ),
     )
 
     client.force_login(user_2)
     url = reverse("wishlist_profile", kwargs={"profile_id": user_1.profile.id})
     response = client.get(url)
-    basic_asserts_template(response, VarStr.WISHILIST_PROFILE_EMPTY)
+    basic_asserts_template(cast(HttpResponse, response), VarStr.WISHILIST_PROFILE_EMPTY)
 
 
-def test_wishitem_detail_view(client, basic_asserts_template):
-    user = UserFactory()
-    wishitem = WishItemFactory(
-        title=VarStr.WISHITEM_TITLE,
-        profile=user.profile,
+def test_wishitem_detail_view(
+    client: Client, basic_asserts_template: BasicAssertsTemplate
+) -> None:
+    user = cast(User, UserFactory())
+    wishitem = cast(
+        WishItemModel,
+        WishItemFactory(
+            title=VarStr.WISHITEM_TITLE,
+            profile=user.profile,
+        ),
     )
 
     client.force_login(user)
     url = reverse("wishitem_detail", kwargs={"wishitem_id": wishitem.id})
     response = client.get(url)
-    basic_asserts_template(response, VarStr.WISHITEM_TITLE)
+    basic_asserts_template(cast(HttpResponse, response), VarStr.WISHITEM_TITLE)
 
 
-def test_wishitem_detail_view_private(client):
+def test_wishitem_detail_view_private(client: Client) -> None:
     user_1, user_2 = UserFactory.create_batch(2)
-    wishitem = WishItemFactory(profile=user_1.profile, is_private=True)
+    wishitem = cast(
+        WishItemModel,
+        WishItemFactory(profile=user_1.profile, is_private=True),
+    )
 
     client.force_login(user_2)
     url = reverse("wishitem_detail", kwargs={"wishitem_id": wishitem.id})
@@ -129,8 +165,8 @@ def test_wishitem_detail_view_private(client):
     assert response.status_code == 403
 
 
-def test_wishitem_create_view(client):
-    user = UserFactory()
+def test_wishitem_create_view(client: Client) -> None:
+    user = cast(User, UserFactory())
     client.force_login(user)
     url = reverse("wishitem_create")
     data = {
@@ -147,11 +183,14 @@ def test_wishitem_create_view(client):
     ).exists()
 
 
-def test_wishitem_update_view(client):
-    user = UserFactory()
-    wishitem = WishItemFactory(
-        title=VarStr.WISHITEM_TITLE,
-        profile=user.profile,
+def test_wishitem_update_view(client: Client) -> None:
+    user = cast(User, UserFactory())
+    wishitem = cast(
+        WishItemModel,
+        WishItemFactory(
+            title=VarStr.WISHITEM_TITLE,
+            profile=user.profile,
+        ),
     )
     client.force_login(user)
     url = reverse("wishitem_update", kwargs={"wishitem_id": wishitem.id})
@@ -165,10 +204,13 @@ def test_wishitem_update_view(client):
     assert wishitem.title == "new_title"
 
 
-def test_delete_view(client):
-    user = UserFactory()
-    wishitem = WishItemFactory(
-        profile=user.profile,
+def test_delete_view(client: Client) -> None:
+    user = cast(User, UserFactory())
+    wishitem = cast(
+        WishItemModel,
+        WishItemFactory(
+            profile=user.profile,
+        ),
     )
     client.force_login(user)
     url = reverse("wishitem_delete", kwargs={"wishitem_id": wishitem.id})
@@ -186,18 +228,23 @@ def test_delete_view(client):
         VarStr.WISHITEM_DELETE,
     ),
 )
-def test_wishitem_detail_anon(client, word, basic_asserts_template_with_not):
-    wishitem = WishItemFactory(
-        is_private=False,
+def test_wishitem_detail_anon(
+    client: Client, word: str, basic_asserts_template_with_not: BasicAssertsTemplate
+) -> None:
+    wishitem = cast(
+        WishItemModel,
+        WishItemFactory(
+            is_private=False,
+        ),
     )
 
     url = reverse("wishitem_detail", kwargs={"wishitem_id": wishitem.id})
     response = client.get(url)
-    basic_asserts_template_with_not(response, word)
+    basic_asserts_template_with_not(cast(HttpResponse, response), word)
 
 
-def test_wishitem_detail_view_private_anon(client):
-    wishitem = WishItemFactory(is_private=True)
+def test_wishitem_detail_view_private_anon(client: Client) -> None:
+    wishitem = cast(WishItemModel, WishItemFactory(is_private=True))
 
     url = reverse("wishitem_detail", kwargs={"wishitem_id": wishitem.id})
     response = client.get(url)
@@ -225,24 +272,34 @@ def test_wishitem_detail_view_private_anon(client):
         ),
     ),
 )
-def test_wishitem_views_login_req(client, basic_asserts_reverse, url_name, kwargs):
-    wishitem = WishItemFactory()
+def test_wishitem_views_login_req(
+    client: Client,
+    basic_asserts_reverse: BasicAssertsReverse,
+    url_name: str,
+    kwargs: dict[str, Any],
+) -> None:
+    wishitem = cast(WishItemModel, WishItemFactory())
     if kwargs:
         url = reverse(url_name, kwargs={"wishitem_id": wishitem.id})
     else:
         url = reverse(url_name)
     response = client.post(url)
-    basic_asserts_reverse(response, "login")
+    basic_asserts_reverse(cast(HttpResponseRedirect, response), "login")
 
 
-def test_wishlist_profile_view_anon(client, basic_asserts_template):
-    user = UserFactory()
-    WishItemFactory(
-        title=VarStr.WISHITEM_TITLE,
-        profile=user.profile,
-        is_private=False,
+def test_wishlist_profile_view_anon(
+    client: Client, basic_asserts_template: BasicAssertsTemplate
+) -> None:
+    user = cast(User, UserFactory())
+    cast(
+        WishItemModel,
+        WishItemFactory(
+            title=VarStr.WISHITEM_TITLE,
+            profile=user.profile,
+            is_private=False,
+        ),
     )
 
     url = reverse("wishlist_profile", kwargs={"profile_id": user.profile.id})
     response = client.get(url)
-    basic_asserts_template(response, VarStr.WISHITEM_TITLE)
+    basic_asserts_template(cast(HttpResponse, response), VarStr.WISHITEM_TITLE)

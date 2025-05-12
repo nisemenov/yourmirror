@@ -20,9 +20,8 @@ repos:
     rev: v0.11.9
     hooks:
       - id: ruff
-        args: ["--fix", "--config", "./pyproject.toml"]
+        args: ["--fix"]
       - id: ruff-format
-        args: ["--config", "./pyproject.toml"]
   - repo: https://github.com/codespell-project/codespell
     rev: v2.4.1
     hooks:

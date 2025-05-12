@@ -6,6 +6,10 @@ class VarStr(enum.StrEnum):
     USER_EMAIL = "newuser@example.com"
     USER_PASSWORD = "SuperStrong123!"
 
+    USER_SETT_DUP_EMAIL = "Пользователь с таким email уже существует"
+    USER_SETT_WRNG_CURR_PASS = "Неверный текущий пароль"
+    USER_SETT_WRNG_SCND_PASS = "Пароли не совпадают"
+
     WISHITEM_TITLE = "test_title"
     WISHITEM_PRIVATE_TITLE = "test_private_title"
     WISHITEM_LINK = "https://example.com"

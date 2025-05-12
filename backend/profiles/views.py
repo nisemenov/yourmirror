@@ -1,12 +1,13 @@
-from typing import Any, cast
+from __future__ import annotations
 
-from django.contrib.auth.models import User
-from django.db.models.query import QuerySet
-from django.http import HttpRequest, HttpResponse
+from typing import TYPE_CHECKING, cast
+
 from django.contrib.auth import login, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views.generic import ListView
 
@@ -15,12 +16,16 @@ from telewish.settings import LOGIN_REMEMBER_ME
 
 from .forms import EmailRegistrationForm, UserSettingsForm
 
+if TYPE_CHECKING:
+    from django.contrib.auth.forms import AuthenticationForm
+    from django.db.models.query import QuerySet
+
 
 class CustomLoginView(LoginView):
     redirect_authenticated_user = True
     next_page = "wishlist_me"
 
-    def form_valid(self, form: Any) -> HttpResponse:
+    def form_valid(self, form: AuthenticationForm) -> HttpResponse:
         remember_me = form.cleaned_data.get("remember_me")
         if not remember_me:
             self.request.session.set_expiry(0)

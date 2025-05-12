@@ -23,6 +23,10 @@ migrate:
 lint:
 	uv run pre-commit run --all-files
 
+.PHONY: mypy
+mypy:
+	uv run pre-commit run mypy --all-files
+
 .PHONY: test
 test:
 	uv run pytest tests/

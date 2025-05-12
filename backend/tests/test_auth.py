@@ -1,18 +1,30 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, cast
+
 import pytest
 
+from django.contrib.auth.models import User
+from django.http import HttpResponseRedirect
 from django.urls import reverse
 
-from profiles.forms import EmailRegistrationForm
 from tests.factories import UserFactory
 from tests.values import VarStr
 
+from profiles.forms import EmailRegistrationForm
 from profiles.models import ProfileModel
+
+if TYPE_CHECKING:
+    from django.test import Client
+    from tests.conftest import BasicAssertsReverse
 
 
 pytestmark = pytest.mark.django_db
 
 
-def test_register_view(client, basic_asserts_reverse):
+def test_register_view(
+    client: Client, basic_asserts_reverse: BasicAssertsReverse
+) -> None:
     url = reverse("register")
     data = {
         "email": VarStr.USER_EMAIL,
@@ -21,25 +33,25 @@ def test_register_view(client, basic_asserts_reverse):
         "password2": VarStr.USER_PASSWORD,
     }
     response = client.post(url, data)
-    basic_asserts_reverse(response, "wishlist_me")
+    basic_asserts_reverse(cast(HttpResponseRedirect, response), "wishlist_me")
     assert ProfileModel.objects.filter(
         user__first_name=VarStr.USER_NAME,
         user__username=VarStr.USER_EMAIL,
     ).exists()
 
 
-def test_login_view(client, basic_asserts_reverse):
-    user = UserFactory()
+def test_login_view(client: Client, basic_asserts_reverse: BasicAssertsReverse) -> None:
+    user = cast(User, UserFactory())
     url = reverse("login")
     data = {
         "username": user.username,
         "password": "testpass123",
     }
     response = client.post(url, data)
-    basic_asserts_reverse(response, "wishlist_me")
+    basic_asserts_reverse(cast(HttpResponseRedirect, response), "wishlist_me")
 
 
-def test_email_registration_form_valid():
+def test_email_registration_form_valid() -> None:
     form_data = {
         "email": VarStr.USER_EMAIL,
         "password1": VarStr.USER_PASSWORD,

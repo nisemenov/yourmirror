@@ -5,7 +5,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "telewish.settings")
 django.setup()
 
 
-def main():
+def main() -> None:
     import factory
     from profiles.models import ProfileModel
     from tests.factories import WishItemFactory, faker_image_file
@@ -14,7 +14,7 @@ def main():
         WishItemFactory.create_batch(
             size=5,
             profile=profile,
-            picture=factory.LazyFunction(faker_image_file),
+            picture=factory.LazyFunction(faker_image_file),  # type: ignore[attr-defined, no-untyped-call]
         )
 
 
