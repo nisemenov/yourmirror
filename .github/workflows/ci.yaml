@@ -27,7 +27,7 @@ jobs:
           key: pre-commit|${{ env.pythonLocation }}|${{ hashFiles('.pre-commit-config.yaml') }}
 
       - name: Export environment variables
-        uses: .github/actions/export-env
+        uses: ./.github/actions/export-env
 
       - name: Execute Pre-Commit
         run: pre-commit run --show-diff-on-failure --color=always --all-files
@@ -74,7 +74,7 @@ jobs:
         run: uv sync --all-packages --all-groups
 
       - name: Export environment variables
-        uses: .github/actions/export-env
+        uses: ./.github/actions/export-env
 
       - name: Test
         run: uv run pytest backend/tests/
