@@ -1,4 +1,4 @@
-name: Export Env Vars
+name: Export environment variables
 runs:
   using: "composite"
   steps:
