@@ -1,21 +1,21 @@
 # SERVER
 .PHONY: run-server
 run-server:
-	uv run --package your_mirror.backend -- python manage.py runserver
+	uv run --package yourmirror.backend -- python manage.py runserver
 
 .PHONY: static
 static:
-	uv run --package your_mirror.backend -- python manage.py collectstatic
+	uv run --package yourmirror.backend -- python manage.py collectstatic
 
 
 # MIGRATIONS
 .PHONY: makemigrations
 makemigrations:
-	uv run --package your_mirror.backend -- python manage.py makemigrations
+	uv run --package yourmirror.backend -- python manage.py makemigrations
 
 .PHONY: migrate
 migrate:
-	uv run --package your_mirror.backend -- python manage.py migrate
+	uv run --package yourmirror.backend -- python manage.py migrate
 
 
 # TEST AND LINT

@@ -4,9 +4,9 @@ requires-python = ">=3.13"
 
 [manifest]
 members = [
-    "your-mirror",
-    "your-mirror-backend",
-    "your-mirror-service-link-preview",
+    "yourmirror",
+    "yourmirror-backend",
+    "yourmirror-service-link-preview",
 ]
 
 [[package]]
@@ -1367,7 +1367,7 @@ wheels = [
 ]
 
 [[package]]
-name = "your-mirror"
+name = "yourmirror"
 version = "1.0.0"
 source = { virtual = "." }
 
@@ -1392,7 +1392,7 @@ lint = [
 test = [{ name = "pytest", specifier = ">=8.3.4" }]
 
 [[package]]
-name = "your-mirror-backend"
+name = "yourmirror-backend"
 version = "1.0.0"
 source = { virtual = "backend" }
 dependencies = [
@@ -1443,7 +1443,7 @@ test = [
 ]
 
 [[package]]
-name = "your-mirror-service-link-preview"
+name = "yourmirror-service-link-preview"
 version = "1.0.0"
 source = { virtual = "services/link_preview" }
 dependencies = [

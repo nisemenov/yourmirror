@@ -54,7 +54,7 @@ MIDDLEWARE = [
     "django_browser_reload.middleware.BrowserReloadMiddleware",
 ]
 
-ROOT_URLCONF = "telewish.urls"
+ROOT_URLCONF = "yourmirror.urls"
 
 TEMPLATES_DIR = BASE_DIR / "templates"
 
@@ -75,7 +75,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "telewish.wsgi.application"
+WSGI_APPLICATION = "yourmirror.wsgi.application"
 
 
 DATABASES = {

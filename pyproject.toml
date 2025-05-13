@@ -1,5 +1,5 @@
 [project]
-name = "your_mirror"
+name = "yourmirror"
 version = "1.0.0"
 description = "Your minimalistic wishlist with a friendly tg-bot"
 readme = "README.md"

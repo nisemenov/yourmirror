@@ -7,19 +7,19 @@ sync-all:
 # SERVER
 .PHONY: run-backend
 run-backend:
-	uv run --package your_mirror.backend -- python backend/manage.py runserver
+	uv run --package yourmirror.backend -- python backend/manage.py runserver
 
 .PHONY: run-link-preview
 run-link-preview:
-	uv run --package your_mirror.service.link_preview -- uvicorn services.link_preview.app:app --port 8001 --reload
+	uv run --package yourmirror.service.link_preview -- uvicorn services.link_preview.app:app --port 8001 --reload
 
 .PHONY: tailwind-install
 tailwind-install:
-	uv run --package your_mirror.backend -- python backend/manage.py tailwind install
+	uv run --package yourmirror.backend -- python backend/manage.py tailwind install
 
 .PHONY: tailwind-start
 tailwind-start:
-	uv run --package your_mirror.backend -- python backend/manage.py tailwind start
+	uv run --package yourmirror.backend -- python backend/manage.py tailwind start
 
 
 # DOCKER
@@ -29,7 +29,7 @@ minio:
 
 .PHONY: psql
 psql:
-	docker exec -it postgres psql -d telewish -U postgres
+	docker exec -it postgres psql -d yourmirror -U postgres
 
 
 # TEST AND LINT

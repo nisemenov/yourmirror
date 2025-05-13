@@ -1,5 +1,5 @@
 [project]
-name = "your_mirror.backend"
+name = "yourmirror.backend"
 version = "1.0.0"
 dependencies = [
     "django-tailwind>=4.0.1",
@@ -29,7 +29,7 @@ lint = [
 ]
 
 [tool.pytest.ini_options]
-DJANGO_SETTINGS_MODULE = "telewish.settings"
+DJANGO_SETTINGS_MODULE = "yourmirror.settings"
 python_files = ["test_*.py"]
 filterwarnings = [
     "ignore::DeprecationWarning:passlib.*",
@@ -69,4 +69,4 @@ module = [
 ignore_errors = true
 
 [tool.django-stubs]
-django_settings_module = "telewish.settings"
+django_settings_module = "yourmirror.settings"

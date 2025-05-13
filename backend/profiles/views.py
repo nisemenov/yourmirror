@@ -12,7 +12,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.views.generic import ListView
 
 from profiles.models import FollowModel, ProfileModel
-from telewish.settings import LOGIN_REMEMBER_ME
+from yourmirror.settings import LOGIN_REMEMBER_ME
 
 from .forms import EmailRegistrationForm, UserSettingsForm
 

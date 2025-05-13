@@ -1,7 +1,7 @@
 import os
 import django
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "telewish.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "yourmirror.settings")
 django.setup()
 
 
