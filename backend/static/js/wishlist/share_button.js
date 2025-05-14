@@ -1,7 +1,7 @@
 const shareButton = document.getElementById('share-button');
 const shareModal = document.getElementById('share-modal');
-const copyLinkButton = document.getElementById('copy-link');
 const shareOptions = document.getElementById('share-options');
+const copyLinkButton = document.getElementById('copy-link');
 const linkCopied = document.getElementById('link-copied');
 
 let autoCloseTimeout;

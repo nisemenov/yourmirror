@@ -57,3 +57,7 @@ class WishItemForm(forms.ModelForm):  # type: ignore[type-arg]
         if commit:
             instance.save()
         return cast(WishItemModel, instance)
+
+
+class EmailReserveForm(forms.Form):
+    email = forms.EmailField(help_text="email")
