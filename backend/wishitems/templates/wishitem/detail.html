@@ -31,18 +31,27 @@
                         {% include "buttons/form_submit_button.html" with text="отменить бронь" %}
                     {% endif %}
                 {% else %}
-                    {% if wishitem.profile.user != request.user %}
+                    {% if user.is_authenticated %}
                         {% include "buttons/form_submit_button.html" with text="зарезервировать" black=True %}
+                    {% else %}
+                        <button
+                            id="reserve-button"
+                            type="button"
+                            class="px-4 py-3 bg-gray-900 text-white rounded-none hover:bg-gray-700 cursor-pointer transition lowercase">
+                            зарезервировать
+                        </button>
                     {% endif %}
                 {% endif %}
 
-            {% if wishitem.profile.user == request.user %}
-                <div class="space-x-4">
-                    {% include "buttons/base_button.html" with url_name="wishitem_update" id=wishitem.id text="редактировать" %}
-                    <a href="{% url "wishitem_delete" wishitem.id %}" class="px-4 py-4 bg-red-600 text-white rounded-none hover:bg-red-700 transition">удалить</a>
-                </div>
-            {% endif %}
+                {% if wishitem.profile.user == request.user %}
+                    <div class="space-x-4">
+                        {% include "buttons/base_button.html" with url_name="wishitem_update" id=wishitem.id text="редактировать" %}
+                        <a href="{% url "wishitem_delete" wishitem.id %}" class="px-4 py-4 bg-red-600 text-white rounded-none hover:bg-red-700 transition">удалить</a>
+                    </div>
+                {% endif %}
+            </div>
         </div>
     </div>
 </div>
+{% include "wishitem/anon_reserve_modal.html" %}
 {% endblock %}

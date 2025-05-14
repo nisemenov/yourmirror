@@ -1,0 +1,21 @@
+{% load static %}
+
+<div id="reserve-modal" class="hidden fixed pt-40 inset-0 z-50 flex justify-center bg-black/50">
+    <div class="flex flex-col justify-between bg-gray-50 p-4 border border-gray-300 w-[500px] h-[300px]">
+        <div class="flex flex-col gap-2 text-justify">
+            <p>для резервации желания достаточно ввести свой email</p>
+            <p>для просмотра всех зарезервированных желаний необходима регистрация</p>
+        </div>
+        <form id="email-form" method="POST" class="space-y-8 text-gray-800">
+            {% csrf_token %}
+            <input type="email" name="{{ form.email.name }}" placeholder="{{ form.email.help_text }}" id="{{ form.email.id_for_label }}" class="w-full border-b border-gray-500 outline-none py-3">
+            <button type="submit" class="w-full py-3 border border-gray-200 cursor-pointer hover:bg-gray-100 transition text-sm uppercase">Зарезервировать</button>
+        </form>
+        <div class="flex gap-6">
+            <a href="{% url 'register' %}" class="w-full py-3 border border-gray-200 bg-gray-900 text-white hover:bg-gray-700 transition text-center text-sm uppercase">регистрация</a>
+            <button id="close-button" type="button" class="w-full py-2 border border-gray-200 hover:bg-gray-100 transition cursor-pointer text-sm uppercase">Закрыть</button>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/wishitem/anon_reserve_modal.js' %}"></script>

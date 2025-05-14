@@ -17,7 +17,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from profiles.models import ProfileModel
 
 from .models import WishItemModel
-from .forms import WishItemForm
+from .forms import WishItemForm, EmailReserveForm
 
 
 class WishlistMyView(LoginRequiredMixin, ListView):  # type: ignore[type-arg]
@@ -84,20 +84,37 @@ class WishItemDetailView(UserPassesTestMixin, DetailView):  # type: ignore[type-
 
     def test_func(self) -> bool:
         wishitem = self.get_object()
-        return not wishitem.is_private or wishitem.profile.user == self.request.user
+        return not wishitem.is_private or (wishitem.profile.user == self.request.user)
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        if "form" not in context:
+            context["form"] = EmailReserveForm()
+        return context
+
+    def _get_or_create_user_by_email(self, email: str) -> User:
+        email = email.strip().lower()
+        user, created = User.objects.get_or_create(username=email, email=email)
+        return user
 
     def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        wishitem = self.get_object()
         user = request.user
-        if isinstance(user, User):
-            self.object = self.get_object()
 
-            if self.object.reserved:
-                self.object.reserved = None
+        if not user.is_authenticated:
+            form = EmailReserveForm(request.POST)
+            if form.is_valid():
+                user = self._get_or_create_user_by_email(form.cleaned_data["email"])
             else:
-                self.object.reserved = user.profile
+                return self.render_to_response(self.get_context_data(form=form))
 
-            self.object.save()
-        return redirect("wishitem_detail", wishitem_id=self.object.id)
+        if wishitem.reserved:
+            wishitem.reserved = None
+        else:
+            wishitem.reserved = user.profile
+        wishitem.save()
+
+        return redirect("wishitem_detail", wishitem_id=wishitem.id)
 
 
 class WishItemCreateView(LoginRequiredMixin, CreateView):  # type: ignore[type-arg]
