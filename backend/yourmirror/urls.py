@@ -5,13 +5,14 @@ from django.conf.urls.static import static
 from django.urls import include, path
 from django.views.generic import TemplateView
 
-from profiles.views import CustomLoginView, register
+from services.views import CustomLoginView, confirm_email, register
 
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("auth/login/", CustomLoginView.as_view(), name="login"),
     path("auth/", include("django.contrib.auth.urls")),
+    path("auth/confirm/<str:token>/", confirm_email, name="confirm_email"),
     path("register/", register, name="register"),
     path("contacts/", views.flatpage, {"url": "/contacts/"}, name="contacts"),
     path("about/", views.flatpage, {"url": "/about/"}, name="about"),

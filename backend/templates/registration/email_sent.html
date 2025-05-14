@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Письмо отправлено{% endblock %}
+
+{% block content %}
+<section class="flex justify-center items-center min-h-screen">
+    <div class="w-full max-w-2xl pt-[60px] uppercase">
+        <h2 class="text-2xl mb-8">Подтверждение регистрации</h2>
+        <p class="text-gray-600 mb-6">
+            На вашу почту отправлено письмо с ссылкой для подтверждения регистрации.
+            Пожалуйста, проверьте ваш email, включая папку "Спам".
+        </p>
+        <p class="text-gray-600 mb-8">
+            Если письмо не пришло, вы можете <a href="{% url 'register' %}" class="underline text-gray-500 hover:text-gray-800">попробовать снова</a>.
+        </p>
+        <a href="{% url 'home' %}" class="inline-block w-full py-4 px-4 border border-gray-200 hover:bg-gray-100 transition text-center lowercase rounded">
+            На главную
+        </a>
+    </div>
+</section>
+{% endblock %}
