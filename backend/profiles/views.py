@@ -38,11 +38,27 @@ def register(request: HttpRequest) -> HttpResponse:
     if request.method == "POST":
         form = EmailRegistrationForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect("wishlist_me")
+            email = form.cleaned_data["email"]
+            try:
+                user = User.objects.get(email=email)
+                if user.has_usable_password():
+                    form.add_error(
+                        "email", "Пользователь с таким email уже зарегистрирован, "
+                    )
+                    return render(request, "registration/register.html", {"form": form})
+                else:
+                    user.set_password(form.cleaned_data["password1"])
+                    user.first_name = form.cleaned_data["first_name"]
+                    user.save()
+                    login(request, user)
+                    return redirect("wishlist_me")
+            except User.DoesNotExist:
+                user = form.save()
+                login(request, user)
+                return redirect("wishlist_me")
     else:
-        form = EmailRegistrationForm()
+        form = EmailRegistrationForm(initial={"email": request.GET.get("email", "")})
+
     return render(request, "registration/register.html", {"form": form})
 
 
