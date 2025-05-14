@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "minio_storage",
     "profiles.apps.ProfilesConfig",
     "wishitems.apps.WishitemsConfig",
+    "services.apps.ServicesConfig",
 ]
 
 TAILWIND_APP_NAME = "theme"
@@ -152,3 +153,11 @@ LOGIN_URL = "login"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 SITE_ID = 1
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_PORT = 465
+EMAIL_USE_SSL = True
+EMAIL_HOST = env("EMAIL_HOST", default="")
+EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="")
+DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="")
