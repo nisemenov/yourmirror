@@ -4,6 +4,7 @@ from faker import Faker
 from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
 
+from tests.values import VarStr
 from wishitems.models import WishItemModel
 
 
@@ -17,7 +18,7 @@ class UserFactory(factory.django.DjangoModelFactory[User]):
 
     username = factory.Sequence(lambda n: f"user_{n}")
     email = factory.LazyAttribute(lambda o: f"{o.username}@example.com")
-    password = factory.django.Password("testpass123")
+    password = factory.django.Password(VarStr.USER_PASSWORD)
 
 
 def faker_image_file():
