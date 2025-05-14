@@ -5,13 +5,14 @@
             type="{{ field_type }}"
             name="{{ field.name }}"
             id="{{ field.id_for_label }}"
+            value="{{ field.value|default_if_none:'' }}"
             class="w-full border-b border-black outline-none py-3 caret-black focus:caret-black"
             required
         >
     </div>
     {% if field.errors %}
         <p class="text-red-500 text-sm mt-1">
-            {{ field.errors.0 }}{% if field.name == "email" %}<a href="{% url 'login' %}?email={{ field.value }}" class="underline">Войти?</a>{% endif %}
+            {{ field.errors.0 }}{% if field.name == "email" %}<a href="{% url 'login' %}" class="underline">Войти?</a>{% endif %}
         </p>
     {% endif %}
 </div>

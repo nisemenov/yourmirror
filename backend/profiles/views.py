@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, Any, cast
 
 from django.contrib.auth import login, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
@@ -25,6 +25,14 @@ class CustomLoginView(LoginView):
     redirect_authenticated_user = True
     next_page = "wishlist_me"
 
+    def get_initial(self) -> dict[str, Any]:
+        initial = super().get_initial()
+        email = self.request.session.pop("prefilled_email", None)
+        if email:
+            print(initial)
+            initial["username"] = email
+        return initial
+
     def form_valid(self, form: AuthenticationForm) -> HttpResponse:
         remember_me = form.cleaned_data.get("remember_me")
         if not remember_me:
@@ -45,6 +53,7 @@ def register(request: HttpRequest) -> HttpResponse:
                     form.add_error(
                         "email", "Пользователь с таким email уже зарегистрирован, "
                     )
+                    request.session["prefilled_email"] = email
                     return render(request, "registration/register.html", {"form": form})
                 else:
                     user.set_password(form.cleaned_data["password1"])
