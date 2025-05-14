@@ -4,7 +4,9 @@ import enum
 class VarStr(enum.StrEnum):
     USER_NAME = "test_name"
     USER_EMAIL = "newuser@example.com"
-    USER_PASSWORD = "SuperStrong123!"
+    USER_PASSWORD = "testpass123"
+
+    USER_REG_HAS_USABLE_PASSWORD = "Пользователь с таким email уже зарегистрирован, "
 
     USER_SETT_DUP_EMAIL = "Пользователь с таким email уже существует"
     USER_SETT_WRNG_CURR_PASS = "Неверный текущий пароль"
