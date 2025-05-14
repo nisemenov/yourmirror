@@ -9,7 +9,9 @@
             required
         >
     </div>
-    {% if form.username.errors %}
-        <p class="text-red-500 text-sm mt-1">{{ form.username.errors.0 }}</p>
+    {% if field.errors %}
+        <p class="text-red-500 text-sm mt-1">
+            {{ field.errors.0 }}{% if field.name == "email" %}<a href="{% url 'login' %}?email={{ field.value }}" class="underline">Войти?</a>{% endif %}
+        </p>
     {% endif %}
 </div>
