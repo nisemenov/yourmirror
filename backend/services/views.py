@@ -62,6 +62,7 @@ def register(request: HttpRequest) -> HttpResponse:
                     user.first_name = form.cleaned_data["first_name"]
                     user.save()
                     login(request, user)
+                    # TODO Отправка письма
                     return redirect("wishlist_me")
             except User.DoesNotExist:
                 registration_token, created = (
@@ -102,7 +103,7 @@ def register(request: HttpRequest) -> HttpResponse:
     return render(request, "registration/register.html", {"form": form})
 
 
-def confirm_email(request: HttpRequest, token: str) -> HttpResponse:
+def confirm_email(request: HttpRequest, token: uuid.UUID) -> HttpResponse:
     try:
         registration_token = RegistrationTokenModel.objects.get(token=token)
         if registration_token.is_expired:
@@ -113,9 +114,9 @@ def confirm_email(request: HttpRequest, token: str) -> HttpResponse:
             )
 
         user, created = User.objects.get_or_create(
-            username=registration_token.email,
+            email=registration_token.email,
             defaults={
-                "email": registration_token.email,
+                "username": registration_token.email,
                 "first_name": registration_token.first_name,
             },
         )
