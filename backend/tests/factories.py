@@ -4,11 +4,20 @@ from faker import Faker
 from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
 
-from tests.values import VarStr
+from services.models import RegistrationTokenModel
 from wishitems.models import WishItemModel
+
+from tests.values import VarStr
 
 
 fake = Faker()
+
+
+class RegistrationTokenFactory(
+    factory.django.DjangoModelFactory[RegistrationTokenModel]
+):
+    class Meta:
+        model = RegistrationTokenModel
 
 
 class UserFactory(factory.django.DjangoModelFactory[User]):

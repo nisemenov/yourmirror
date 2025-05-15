@@ -1,11 +1,15 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 from typing import Any, Protocol, cast, runtime_checkable
 
 import pytest
 
-from django.urls import reverse
+from django.db.models import QuerySet
 from django.http import HttpResponse, HttpResponseRedirect
+from django.urls import reverse
+
+from services.models import RegistrationTokenModel
 
 
 pytest_plugins = ["tests.factories"]
@@ -58,5 +62,15 @@ def basic_asserts_template_with_not() -> BasicAssertsTemplate:
     def asserts(response: HttpResponse, word: str) -> None:
         assert response.status_code == 200
         assert word.encode() not in response.content
+
+    return asserts
+
+
+@pytest.fixture
+def asserts_registration_token() -> Callable[[QuerySet[RegistrationTokenModel]], None]:
+    def asserts(reg_tokens: QuerySet[RegistrationTokenModel]) -> None:
+        assert reg_tokens.exists()
+        assert len(reg_tokens) == 1
+        assert not reg_tokens[0].is_expired
 
     return asserts
