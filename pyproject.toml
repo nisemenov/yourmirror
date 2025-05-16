@@ -8,9 +8,6 @@ requires-python = ">=3.13"
 [tool.uv.workspace]
 members = ["backend", "services/*"]
 
-[tool.uv]
-default-groups = ["lint", "test"]
-
 [dependency-groups]
 test = [
     "pytest>=8.3.4",
