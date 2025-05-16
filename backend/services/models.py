@@ -12,9 +12,9 @@ class RegistrationTokenModel(models.Model):
     first_name = models.CharField(max_length=150)
     password_hash = models.CharField(max_length=128)
     token = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+    expires_at = models.DateTimeField()
 
     created_at = models.DateTimeField(auto_now_add=True)
-    expires_at = models.DateTimeField()
 
     @property
     def is_expired(self) -> bool:

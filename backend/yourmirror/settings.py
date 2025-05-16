@@ -34,13 +34,15 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     "django.contrib.flatpages",
     "tailwind",
-    "django_browser_reload",
     "theme",
     "minio_storage",
     "profiles.apps.ProfilesConfig",
     "wishitems.apps.WishitemsConfig",
     "services.apps.ServicesConfig",
 ]
+
+if DEBUG:
+    INSTALLED_APPS += ["django_browser_reload"]
 
 TAILWIND_APP_NAME = "theme"
 
@@ -52,8 +54,10 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "django_browser_reload.middleware.BrowserReloadMiddleware",
 ]
+
+if DEBUG:
+    MIDDLEWARE += ["django_browser_reload.middleware.BrowserReloadMiddleware"]
 
 ROOT_URLCONF = "yourmirror.urls"
 
@@ -161,3 +165,11 @@ EMAIL_HOST = env("EMAIL_HOST", default="")
 EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="")
 DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="")
+
+if not DEBUG:
+    REDIS_HOST = "redis"
+else:
+    REDIS_HOST = "localhost"
+
+CELERY_BROKER_URL = "redis://" + REDIS_HOST + ":6379/0"
+CELERY_RESULT_BACKEND = CELERY_BROKER_URL
