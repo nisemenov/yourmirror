@@ -5,17 +5,16 @@ from typing import TYPE_CHECKING, Any
 
 import uuid
 
-from django.conf import settings
 from django.contrib.auth import login
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView
-from django.core.mail import send_mail
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, redirect
 from django.utils import timezone
 
 from services.models import RegistrationTokenModel
+from tasks.confirmation_email import send_confirmation_email
 from yourmirror.settings import LOGIN_REMEMBER_ME
 
 from .forms import EmailRegistrationForm
@@ -90,13 +89,7 @@ def register(request: HttpRequest) -> HttpResponse:
                 confirmation_url = request.build_absolute_uri(
                     f"/auth/confirm/{registration_token.token}/"
                 )
-                send_mail(
-                    subject="Подтверждение регистрации",
-                    message=f"Пожалуйста, подтвердите вашу регистрацию, перейдя по ссылке: {confirmation_url}",
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=[email],
-                    fail_silently=False,
-                )
+                send_confirmation_email.delay(email, confirmation_url)
                 return render(request, "registration/email_sent.html")
     else:
         form = EmailRegistrationForm()

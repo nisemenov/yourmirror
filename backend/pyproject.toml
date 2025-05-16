@@ -9,10 +9,8 @@ dependencies = [
     "python-dotenv>=1.0.1",
     "django-environ>=0.12.0",
     "django-minio-storage>=0.5.7",
+    "celery[redis]>=5.5.2",
 ]
-
-[tool.uv]
-default-groups = ["dev", "test", "lint"]
 
 [dependency-groups]
 test = [
@@ -51,6 +49,7 @@ warn_unused_configs = true
 [[tool.mypy.overrides]]
 module = [
     "environ",
+    "celery",
 ]
 ignore_missing_imports = true
 
