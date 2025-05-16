@@ -7,10 +7,14 @@
 ## Backend
 
 - Python >= 3.13
-- Django >= 5.2
-- Менеджер пакетов uv >= 0.6.14
 - PostgreSQL >= 17
+- Менеджер пакетов uv >= 0.6.14
+
+#### Django backend
+
+- Django >= 5.2
 - django-minio-storage >= 0.5.7 (используется MinIO как S3-совместимое хранилище)
+- celery[redis]>=5.5.2
 
 ## Frontend
 
@@ -48,9 +52,17 @@
   - `is_private` — bool
   - `reserved` (FK на `ProfileModel`)
 
+#### RegistrationTokenModel
+
+- Промежуточная модель сохранения данных пользователя при регистрации
+- Поля:
+    - `email`, `first_name`, `password_hash`
+    - `token` (UUIDField, для формирования временной ссылки)
+    - `expires_at` (DateTimeField, срок действия ссылки)
+
 ## Аутентификация
 
-- Регистрация по email
+- Регистрация по email, с подтверждением email через отправку временной ссылки (celery, redis)
 - При регистрации: `username = email`
 - Авторизация по email (email используется как username)
 
@@ -59,7 +71,7 @@
 #### Общие
 
 - `register.html`, `login.html`, `logged_out.html`
-- `base.html`, `footer.html`, `header.html`
+- `base.html` (с включенными `footer.html`, `header.html`)
 - `home.html` — главная страница
 - Боковая панель (`side-bar`) содержит вкладку "Контакты" (внизу)
 
@@ -76,6 +88,6 @@
 
 ### Тестирование и форматирование
 
-- Pre-commit: `pre-commit-hooks`, `ruff`, `codespell`
+- Pre-commit: `pre-commit-hooks`, `ruff`, `codespell`, `mypy`
 - Тесты: `pytest-django`, юнит-тесты для логики MVC
 - CI: GitHub Actions — пайплайн с форматированием и тестами
