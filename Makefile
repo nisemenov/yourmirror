@@ -31,6 +31,10 @@ minio:
 psql:
 	docker exec -it postgres psql -d yourmirror -U postgres
 
+.PHONY: redis
+redis:
+	docker exec -it redis redis-cli
+
 
 # TEST AND LINT
 .PHONY: lint
