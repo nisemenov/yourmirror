@@ -38,7 +38,7 @@ class WishItemModel(models.Model):
     reserved = models.ForeignKey(
         ProfileModel, on_delete=models.SET_NULL, blank=True, null=True
     )
-    reserved_at = models.DateTimeField(auto_now=True)
+    reserved_at = models.DateTimeField(null=True, blank=True)
 
     is_private = models.BooleanField(default=False)  # pyright: ignore[reportArgumentType]
 
