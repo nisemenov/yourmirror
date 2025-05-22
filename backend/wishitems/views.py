@@ -1,9 +1,14 @@
+from datetime import timedelta
 from typing import Any, cast
 
+import uuid
+
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.db.models import QuerySet
 from django.http import HttpRequest, HttpResponse, HttpResponseBase
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
 from django.views.generic import (
     CreateView,
     DeleteView,
@@ -15,6 +20,8 @@ from django.urls import reverse, reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 from profiles.models import ProfileModel
+from services.models import RegistrationTokenModel
+from tasks.email import send_first_reservation_email, send_reservation_email
 
 from .models import WishItemModel
 from .forms import WishItemForm, EmailReserveForm
@@ -92,28 +99,69 @@ class WishItemDetailView(UserPassesTestMixin, DetailView):  # type: ignore[type-
             context["form"] = EmailReserveForm()
         return context
 
-    def _get_or_create_user_by_email(self, email: str) -> User:
-        email = email.strip().lower()
-        user, created = User.objects.get_or_create(username=email, email=email)
-        return user
-
     def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        wishitem = self.get_object()
+        self.object = self.get_object()
+        wishitem = self.object
         user = request.user
 
         if not user.is_authenticated:
             form = EmailReserveForm(request.POST)
             if form.is_valid():
-                user = self._get_or_create_user_by_email(form.cleaned_data["email"])
+                email = form.cleaned_data["email"]
+                try:
+                    user = User.objects.get(email=email)
+                except User.DoesNotExist:
+                    registration_token, created = (
+                        RegistrationTokenModel.objects.get_or_create(
+                            email=email,
+                            defaults={
+                                "token": str(uuid.uuid4()),
+                                "wishitem": wishitem,
+                            },
+                        )
+                    )
+                    if not created:
+                        if registration_token.is_expired:
+                            registration_token.token = str(uuid.uuid4())
+                            registration_token.expires_at = timezone.now() + timedelta(
+                                hours=24
+                            )
+                        registration_token.wishitem = wishitem
+                        registration_token.save()
+
+                    # Отправка письма
+                    confirmation_url = f"{settings.FULL_DOMAIN}/confirm_email/{registration_token.token}/"
+                    send_first_reservation_email.delay(email, confirmation_url)
+                    return self.render_to_response(
+                        self.get_context_data(form=EmailReserveForm(), email_sent=True)
+                    )
             else:
                 return self.render_to_response(self.get_context_data(form=form))
 
-        if wishitem.reserved:
-            wishitem.reserved = None
+        if wishitem.profile.user == user:
+            return render(
+                request,
+                template_name="403.html",
+                context={"message": "Вы не можете зарезервировать свое желание"},
+                status=403,
+            )
         else:
-            wishitem.reserved = user.profile
-        wishitem.save()
+            if wishitem.reserved == user.profile:
+                wishitem.reserved = None
+            elif wishitem.reserved is None:
+                wishitem.reserved = user.profile
+            else:
+                return render(
+                    request,
+                    template_name="403.html",
+                    context={"message": "Это желание уже кто-то зарезервировал"},
+                    status=403,
+                )
+            wishitem.reserved_at = timezone.now()
+            wishitem.save()
 
+        # Отправка письма
+        send_reservation_email.delay(user.email, wishitem.id)
         return redirect("wishitem_detail", wishitem_id=wishitem.id)
 
 

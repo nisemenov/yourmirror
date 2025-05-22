@@ -21,30 +21,33 @@
                 <a href="{{ wishitem.link }}" class="hover:text-gray-500 transition-all underline" target="_blank">перейти по ссылке</a>
             {% endif %}
 
-            <div class="flex flex-row pt-8 space-x-4">
+            <div class="flex flex-col pt-8 space-y-4">
                 {% if wishitem.reserved %}
-                    <button disabled class="px-4 py-3 bg-gray-300 text-white rounded-none transition cursor-not-allowed">
-                        зарезервировано
-                    </button>
-
-                    {% if wishitem.reserved.user == request.user %}
-                        {% include "buttons/form_submit_button.html" with text="отменить бронь" %}
-                    {% endif %}
-                {% else %}
-                    {% if user.is_authenticated %}
-                        {% include "buttons/form_submit_button.html" with text="зарезервировать" black=True %}
-                    {% else %}
-                        <button
-                            id="reserve-button"
-                            type="button"
-                            class="px-4 py-3 bg-gray-900 text-white rounded-none hover:bg-gray-700 cursor-pointer transition lowercase">
-                            зарезервировать
+                    <div class="flex gap-4">
+                        <button disabled class="px-4 py-3 bg-gray-300 text-white rounded-none transition cursor-not-allowed">
+                            зарезервировано
                         </button>
+                        {% if wishitem.reserved.user == request.user %}
+                            {% include "buttons/form_submit_button.html" with text="отменить бронь" %}
+                        {% endif %}
+                    </div>
+                {% else %}
+                    {% if wishitem.profile.user != request.user %}
+                        {% if user.is_authenticated %}
+                            {% include "buttons/form_submit_button.html" with text="зарезервировать" black=True %}
+                        {% else %}
+                            <button
+                                id="reserve-button"
+                                type="button"
+                                class="px-4 py-3 bg-gray-900 text-white rounded-none hover:bg-gray-700 cursor-pointer transition lowercase">
+                                зарезервировать
+                            </button>
+                        {% endif %}
                     {% endif %}
                 {% endif %}
 
                 {% if wishitem.profile.user == request.user %}
-                    <div class="space-x-4">
+                    <div class="flex gap-4">
                         {% include "buttons/base_button.html" with url_name="wishitem_update" id=wishitem.id text="редактировать" %}
                         <a href="{% url "wishitem_delete" wishitem.id %}" class="px-4 py-4 bg-red-600 text-white rounded-none hover:bg-red-700 transition">удалить</a>
                     </div>

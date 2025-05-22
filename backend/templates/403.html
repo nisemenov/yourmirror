@@ -3,7 +3,11 @@
 {% block content %}
 <div class="py-20">
     <div class="space-y-4 text-center">
-        <h1 class="uppercase">у вас нет доступа к этой странице</h1>
+        {% if message %}
+            <h1 class="uppercase">{{ message }}</h1>
+        {% else %}
+            <h1 class="uppercase">у вас нет доступа к этой странице</h1>
+        {% endif %}
         <a href="{% url 'home' %}" class="underline transition hover:text-gray-600">вернуться на главную</a>
     </div>
 </div>

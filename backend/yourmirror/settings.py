@@ -1,5 +1,6 @@
 import environ
 import os
+
 from pathlib import Path
 
 
@@ -133,6 +134,11 @@ STORAGES = {
 }
 
 # URLs
+if DEBUG:
+    FULL_DOMAIN = "http://127.0.0.1:8000"
+else:
+    FULL_DOMAIN = ""
+
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
@@ -166,10 +172,10 @@ EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="")
 DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="")
 
-if not DEBUG:
-    REDIS_HOST = "redis"
-else:
+if DEBUG:
     REDIS_HOST = "localhost"
+else:
+    REDIS_HOST = "redis"
 
 CELERY_BROKER_URL = "redis://" + REDIS_HOST + ":6379/0"
 CELERY_RESULT_BACKEND = CELERY_BROKER_URL
