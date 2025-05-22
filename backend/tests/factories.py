@@ -45,4 +45,4 @@ class WishItemFactory(factory.django.DjangoModelFactory[WishItemModel]):
 
     profile = factory.LazyAttribute(lambda _: UserFactory().profile)
 
-    is_private = factory.Faker("boolean")
+    is_private = False

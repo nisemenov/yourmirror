@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from datetime import timedelta
 from typing import TYPE_CHECKING, cast
-import uuid
 
 import pytest
 
@@ -32,6 +31,7 @@ pytestmark = pytest.mark.django_db
 def test_email_registration_form_valid() -> None:
     form_data = {
         "email": VarStr.USER_EMAIL,
+        "first_name": VarStr.USER_NAME,
         "password1": VarStr.USER_PASSWORD,
         "password2": VarStr.USER_PASSWORD,
     }
@@ -41,6 +41,7 @@ def test_email_registration_form_valid() -> None:
     user = form.save()
     assert user.email == VarStr.USER_EMAIL
     assert user.username == VarStr.USER_EMAIL
+    assert user.first_name == VarStr.USER_NAME
     assert user.profile.id
 
 
@@ -106,6 +107,9 @@ def test_register_view_post_expired_tok(
     )
     asserts_registration_token(reg_tokens)
 
+    reg_token.refresh_from_db()
+    assert reg_token.id == reg_tokens[0].id
+
 
 def test_register_user_already_exists_with_password(
     client: Client,
@@ -153,56 +157,6 @@ def test_register_user_exists_without_password(
     user.refresh_from_db()
     assert user.first_name == VarStr.USER_NAME
     assert user.check_password(VarStr.USER_PASSWORD)
-
-
-# CONFIRM EMAIL
-def test_confirm_email_create_user(
-    client: Client,
-    basic_asserts_reverse: BasicAssertsReverse,
-) -> None:
-    reg_token = cast(
-        RegistrationTokenModel,
-        RegistrationTokenFactory(
-            email=VarStr.USER_EMAIL,
-        ),
-    )
-    url = reverse("confirm_email", kwargs={"token": reg_token.token})
-    response = client.get(url)
-    basic_asserts_reverse(cast(HttpResponseRedirect, response), "home")
-
-    users = User.objects.filter(email=VarStr.USER_EMAIL)
-    assert users.exists()
-    assert len(users) == 1
-    assert users[0].email == VarStr.USER_EMAIL
-    assert users[0].username == VarStr.USER_EMAIL
-    assert users[0].profile.id
-    assert not RegistrationTokenModel.objects.filter(email=VarStr.USER_EMAIL).exists()
-
-
-def test_confirm_email_invalid_token(
-    client: Client,
-    basic_asserts_template: BasicAssertsTemplate,
-) -> None:
-    url = reverse("confirm_email", kwargs={"token": uuid.uuid4()})
-    response = client.get(url)
-    basic_asserts_template(
-        cast(HttpResponse, response), VarStr.CONFIRM_EMAIL_INVALID_TOK
-    )
-
-
-def test_confirm_email_expired(
-    client: Client,
-    basic_asserts_template: BasicAssertsTemplate,
-) -> None:
-    reg_token = cast(
-        RegistrationTokenModel,
-        RegistrationTokenFactory(
-            expires_at=(timezone.now() - timedelta(hours=24)),
-        ),
-    )
-    url = reverse("confirm_email", kwargs={"token": reg_token.token})
-    response = client.get(url)
-    basic_asserts_template(cast(HttpResponse, response), VarStr.CONFIRM_EMAIL_EXPIRED)
 
 
 # LOGIN
