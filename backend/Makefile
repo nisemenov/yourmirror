@@ -7,6 +7,10 @@ run-server:
 static:
 	uv run --package yourmirror.backend -- python manage.py collectstatic
 
+.PHONY: celery-start
+celery-start:
+	uv run --package yourmirror.backend -- celery -A yourmirror worker --loglevel=INFO
+
 
 # MIGRATIONS
 .PHONY: makemigrations
