@@ -1,7 +1,7 @@
 # SERVER
-.PHONY: run-server
-run-server:
-	uv run --package yourmirror.backend -- python manage.py runserver
+.PHONY: run-server-dev
+run-server-dev:
+	uv run --package yourmirror.backend -- python manage.py runserver --settings=yourmirror.settings.dev
 
 .PHONY: static
 static:
