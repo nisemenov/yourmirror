@@ -1,29 +1,12 @@
 import environ
-import os
 
 from pathlib import Path
 
 
 env = environ.Env(DEBUG=(bool, False))
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 PROJECT_ROOT = BASE_DIR.parent
-
-environ.Env.read_env(os.path.join(PROJECT_ROOT, ".env"))
-
-DEBUG = env("DEBUG")
-
-SECRET_KEY = env("SECRET_KEY")
-
-ALLOWED_HOSTS = [
-    "*",
-    "127.0.0.1",
-    "localhost",
-]
-
-# for login
-LOGIN_REMEMBER_ME = env("LOGIN_REMEMBER_ME", default=0)
-
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -42,9 +25,6 @@ INSTALLED_APPS = [
     "services.apps.ServicesConfig",
 ]
 
-if DEBUG:
-    INSTALLED_APPS += ["django_browser_reload"]
-
 TAILWIND_APP_NAME = "theme"
 
 MIDDLEWARE = [
@@ -57,8 +37,6 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-if DEBUG:
-    MIDDLEWARE += ["django_browser_reload.middleware.BrowserReloadMiddleware"]
 
 ROOT_URLCONF = "yourmirror.urls"
 
@@ -83,19 +61,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "yourmirror.wsgi.application"
 
-
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": env("DB_NAME"),
-        "USER": env("DB_USER"),
-        "PASSWORD": env("DB_PASSWORD"),
-        "HOST": env("DB_HOST"),
-        "PORT": env("DB_PORT"),
-    }
-}
-
-
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -112,43 +77,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# MinIO базовые параметры
-MINIO_STORAGE_ENDPOINT = f"{env('MINIO_HOST')}:{env('MINIO_PORT')}"
-MINIO_STORAGE_ACCESS_KEY = env("MINIO_ROOT_USER")
-MINIO_STORAGE_SECRET_KEY = env("MINIO_ROOT_PASSWORD")
-MINIO_STORAGE_USE_HTTPS = env.bool("MINIO_SECURE", default=False)
-
-# Бакеты
-MINIO_STORAGE_MEDIA_BUCKET_NAME = "media"
-MINIO_STORAGE_STATIC_BUCKET_NAME = "static"
-MINIO_STORAGE_AUTO_CREATE_MEDIA_BUCKET = True
-MINIO_STORAGE_AUTO_CREATE_MEDIA_POLICY = "READ_WRITE"
-
-STORAGES = {
-    "default": {
-        "BACKEND": "minio_storage.storage.MinioMediaStorage",
-    },
-    "staticfiles": {
-        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
-    },
-}
-
-# URLs
-if DEBUG:
-    FULL_DOMAIN = "http://127.0.0.1:8000"
-else:
-    FULL_DOMAIN = ""
-
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
-
-MEDIA_URL = f"http://{env('MINIO_HOST')}:{env('MINIO_PORT')}/media/"
-MEDIA_ROOT = BASE_DIR / "media"
-
 
 LANGUAGE_CODE = "ru-RU"
 
@@ -163,19 +97,3 @@ LOGIN_URL = "login"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 SITE_ID = 1
-
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_PORT = 465
-EMAIL_USE_SSL = True
-EMAIL_HOST = env("EMAIL_HOST", default="")
-EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="")
-EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="")
-DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="")
-
-if DEBUG:
-    REDIS_HOST = "localhost"
-else:
-    REDIS_HOST = "redis"
-
-CELERY_BROKER_URL = "redis://" + REDIS_HOST + ":6379/0"
-CELERY_RESULT_BACKEND = CELERY_BROKER_URL
