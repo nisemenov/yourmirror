@@ -3,6 +3,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import Any, Protocol, cast, runtime_checkable
 
+from django.core.mail import EmailMessage
 import pytest
 
 from django.contrib.auth.models import User
@@ -44,6 +45,16 @@ class AssertsUser(Protocol):
         users: QuerySet[User],
         basic_fields: bool = ...,
         profile: bool = ...,
+    ) -> None: ...
+
+
+@runtime_checkable
+class AssertsTaskEmails(Protocol):
+    def __call__(
+        self,
+        box: list[EmailMessage],
+        subject: str,
+        recipient: str,
     ) -> None: ...
 
 
@@ -102,6 +113,20 @@ def asserts_user() -> AssertsUser:
             assert users[0].email == VarStr.USER_EMAIL
             assert users[0].username == VarStr.USER_EMAIL
         if profile:
-            assert users[0].profile.id
+            assert users[0].profile.id  # type: ignore[attr-defined]
+
+    return asserts
+
+
+@pytest.fixture
+def asserts_task_emails() -> AssertsTaskEmails:
+    def asserts(
+        box: list[EmailMessage],
+        subject: str,
+        recipient: str,
+    ) -> None:
+        assert len(box) == 1
+        assert subject in box[0].subject
+        assert recipient in box[0].to
 
     return asserts

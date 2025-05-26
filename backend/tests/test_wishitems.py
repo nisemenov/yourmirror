@@ -4,13 +4,14 @@ from collections.abc import Callable
 from datetime import timedelta
 from typing import TYPE_CHECKING, Any, cast
 
-from django.db.models import QuerySet
-from django.utils import timezone
 import pytest
 
-from django.urls import reverse
 from django.contrib.auth.models import User
+from django.core import mail
+from django.db.models import QuerySet
 from django.http import HttpResponse, HttpResponseRedirect
+from django.urls import reverse
+from django.utils import timezone
 
 from services.models import RegistrationTokenModel
 from wishitems.forms import CustomClearableFileInput, WishItemForm
@@ -21,7 +22,11 @@ from tests.values import VarStr
 
 if TYPE_CHECKING:
     from django.test import Client
-    from tests.conftest import BasicAssertsTemplate, BasicAssertsReverse
+    from tests.conftest import (
+        BasicAssertsTemplate,
+        BasicAssertsReverse,
+        AssertsTaskEmails,
+    )
 
 
 pytestmark = pytest.mark.django_db
@@ -41,8 +46,8 @@ def test_wishitem_form() -> None:
     form = WishItemForm(data=form_data)
     assert form.is_valid()
 
-    form.save(profile=user.profile)
-    assert len(WishItemModel.objects.filter(profile=user.profile)) == 1
+    form.save(profile=user.profile)  # type: ignore[attr-defined]
+    assert len(WishItemModel.objects.filter(profile=user.profile)) == 1  # type: ignore[attr-defined]
 
 
 def test_wishitem_form_missing_required() -> None:
@@ -75,7 +80,7 @@ def test_wishitem_detail_view(
         WishItemModel,
         WishItemFactory(
             title=VarStr.WISHITEM_TITLE,
-            profile=user.profile,
+            profile=user.profile,  # type: ignore[attr-defined]
         ),
     )
 
@@ -89,7 +94,7 @@ def test_wishitem_detail_view_private(client: Client) -> None:
     user_1, user_2 = UserFactory.create_batch(2)
     wishitem = cast(
         WishItemModel,
-        WishItemFactory(profile=user_2.profile, is_private=True),
+        WishItemFactory(profile=user_2.profile, is_private=True),  # type: ignore[attr-defined]
     )
 
     client.force_login(user_1)
@@ -98,7 +103,9 @@ def test_wishitem_detail_view_private(client: Client) -> None:
     assert response.status_code == 403
 
 
-def test_wishitem_create_view(client: Client) -> None:
+def test_wishitem_create_view(
+    client: Client,
+) -> None:
     user = cast(User, UserFactory())
     client.force_login(user)
 
@@ -113,7 +120,7 @@ def test_wishitem_create_view(client: Client) -> None:
     assert response.status_code == 302
     assert WishItemModel.objects.filter(  # pyright: ignore[reportAttributeAccessIssue]
         title=VarStr.WISHITEM_TITLE,
-        profile=user.profile,
+        profile=user.profile,  # type: ignore[attr-defined]
     ).exists()
 
 
@@ -123,7 +130,7 @@ def test_wishitem_update_view(client: Client) -> None:
         WishItemModel,
         WishItemFactory(
             title=VarStr.WISHITEM_TITLE,
-            profile=user.profile,
+            profile=user.profile,  # type: ignore[attr-defined]
         ),
     )
     client.force_login(user)
@@ -143,7 +150,7 @@ def test_delete_view(client: Client) -> None:
     wishitem = cast(
         WishItemModel,
         WishItemFactory(
-            profile=user.profile,
+            profile=user.profile,  # type: ignore[attr-defined]
         ),
     )
     client.force_login(user)
@@ -168,7 +175,7 @@ def test_wishitem_detail_view_my_without_buttons(
     wishitem = cast(
         WishItemModel,
         WishItemFactory(
-            profile=user.profile,
+            profile=user.profile,  # type: ignore[attr-defined]
         ),
     )
     client.force_login(user)
@@ -246,8 +253,10 @@ def test_wishitem_detail_post_to_reserve(
     client: Client,
     basic_asserts_template: BasicAssertsTemplate,
     basic_asserts_reverse: BasicAssertsReverse,
+    asserts_task_emails: AssertsTaskEmails,
 ) -> None:
-    client.force_login(cast(User, UserFactory()))
+    user = cast(User, UserFactory())
+    client.force_login(user)
     wishitem = cast(WishItemModel, WishItemFactory())
     assert not wishitem.reserved
 
@@ -258,6 +267,7 @@ def test_wishitem_detail_post_to_reserve(
         "wishitem_detail",
         {"wishitem_id": wishitem.id},
     )
+    asserts_task_emails(mail.outbox, wishitem.title, user.email)
 
     response = client.get(url)
     basic_asserts_template(
@@ -298,7 +308,7 @@ def test_wishitem_detail_my_post_to_reserve(
     wishitem = cast(
         WishItemModel,
         WishItemFactory(
-            profile=user.profile,
+            profile=user.profile,  # type: ignore[attr-defined]
         ),
     )
     client.force_login(user)
@@ -319,7 +329,7 @@ def test_wishitem_detail_my_post_to_reserve_without_auth(
     wishitem = cast(
         WishItemModel,
         WishItemFactory(
-            profile=user.profile,
+            profile=user.profile,  # type: ignore[attr-defined]
         ),
     )
     assert not wishitem.reserved
@@ -335,17 +345,20 @@ def test_wishitem_detail_post_to_reserve_without_auth(
     client: Client,
     basic_asserts_template: BasicAssertsTemplate,
     basic_asserts_reverse: BasicAssertsReverse,
+    asserts_task_emails: AssertsTaskEmails,
 ) -> None:
+    user = cast(User, UserFactory())
     wishitem = cast(WishItemModel, WishItemFactory())
     assert not wishitem.reserved
 
     url = reverse("wishitem_detail", kwargs={"wishitem_id": wishitem.id})
-    response = client.post(url, data={"email": UserFactory().email})
+    response = client.post(url, data={"email": user.email})
     basic_asserts_reverse(
         cast(HttpResponseRedirect, response),
         "wishitem_detail",
         {"wishitem_id": wishitem.id},
     )
+    asserts_task_emails(mail.outbox, wishitem.title, user.email)
 
     response = client.get(url)
     basic_asserts_template(cast(HttpResponse, response), VarStr.WISHITEM_RESERVED)
@@ -355,6 +368,7 @@ def test_wishitem_detail_post_to_reserve_anon(
     client: Client,
     basic_asserts_template: BasicAssertsTemplate,
     asserts_registration_token: Callable[[QuerySet[RegistrationTokenModel]], None],
+    asserts_task_emails: AssertsTaskEmails,
 ) -> None:
     wishitem = cast(WishItemModel, WishItemFactory())
     assert not wishitem.reserved
@@ -363,6 +377,9 @@ def test_wishitem_detail_post_to_reserve_anon(
     response = client.post(url, data={"email": VarStr.USER_EMAIL})
     basic_asserts_template(
         cast(HttpResponse, response), VarStr.WISHITEM_FIRST_RESERVATION_EMAIL
+    )
+    asserts_task_emails(
+        mail.outbox, VarStr.FIRST_RESERVATION_EMAIL_SUBJECT, VarStr.USER_EMAIL
     )
 
     response = client.get(url)

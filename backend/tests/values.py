@@ -44,3 +44,7 @@ class VarStr(enum.StrEnum):
     WISHITEM_UPDATE = "Редактировать"
     WISHITEM_DELETE = "Удалить"
     WISHITEM_RESERVED_BY_USER = "отменить бронь"
+
+    # TASK EMAILS
+    CONFIRMATION_EMAIL_SUBJECT = "Подтверждение регистрации"
+    FIRST_RESERVATION_EMAIL_SUBJECT = "Подтверждение почты"

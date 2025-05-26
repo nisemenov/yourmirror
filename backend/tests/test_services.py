@@ -7,6 +7,7 @@ import uuid
 import pytest
 
 from django.contrib.auth.models import User
+from django.core import mail
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.utils import timezone
@@ -19,7 +20,12 @@ from wishitems.models import WishItemModel
 
 if TYPE_CHECKING:
     from django.test import Client
-    from tests.conftest import BasicAssertsTemplate, BasicAssertsReverse, AssertsUser
+    from tests.conftest import (
+        BasicAssertsTemplate,
+        BasicAssertsReverse,
+        AssertsUser,
+        AssertsTaskEmails,
+    )
 
 
 pytestmark = pytest.mark.django_db
@@ -66,6 +72,7 @@ def test_confirm_first_reservation_email_view(
     client: Client,
     basic_asserts_reverse: BasicAssertsReverse,
     asserts_user: AssertsUser,
+    asserts_task_emails: AssertsTaskEmails,
 ) -> None:
     wishitem = cast(WishItemModel, WishItemFactory())
     reg_token = cast(
@@ -83,6 +90,7 @@ def test_confirm_first_reservation_email_view(
         "wishitem_detail",
         {"wishitem_id": wishitem.id},
     )
+    asserts_task_emails(mail.outbox, wishitem.title, VarStr.USER_EMAIL)
 
     users = User.objects.filter(email=VarStr.USER_EMAIL)
     asserts_user(users=users)
@@ -118,7 +126,7 @@ def test_confirm_first_reservation_with_race_conditions(
         WishItemModel,
         WishItemFactory(
             is_private=False,
-            reserved=cast(User, UserFactory()).profile,
+            reserved=cast(User, UserFactory()).profile,  # type: ignore[attr-defined]
         ),
     )
     reg_token = cast(

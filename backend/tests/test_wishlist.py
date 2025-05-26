@@ -34,7 +34,7 @@ def test_wishlist_profile_empty_view(
 ) -> None:
     user_1, user_2 = UserFactory.create_batch(2)
     client.force_login(user_1)
-    url = reverse("wishlist_profile", kwargs={"profile_id": user_2.profile.id})
+    url = reverse("wishlist_profile", kwargs={"profile_id": user_2.profile.id})  # type: ignore[attr-defined]
     response = client.get(url)
     basic_asserts_template(cast(HttpResponse, response), VarStr.WISHILIST_PROFILE_EMPTY)
 
@@ -49,12 +49,12 @@ def test_wishlist_my_view(
         WishItemModel,
         WishItemFactory(
             title=VarStr.WISHITEM_TITLE,
-            profile=user.profile,
+            profile=user.profile,  # type: ignore[attr-defined]
         ),
     )
     client.force_login(user)
 
-    url = reverse("wishlist_profile", kwargs={"profile_id": user.profile.id})
+    url = reverse("wishlist_profile", kwargs={"profile_id": user.profile.id})  # type: ignore[attr-defined]
     response = client.get(url)
     basic_asserts_reverse(cast(HttpResponseRedirect, response), "wishlist_me")
 
@@ -70,13 +70,13 @@ def test_wishlist_profile_view(
         WishItemModel,
         WishItemFactory(
             title=VarStr.WISHITEM_TITLE,
-            profile=user_2.profile,
+            profile=user_2.profile,  # type: ignore[attr-defined]
             is_private=False,
         ),
     )
 
     client.force_login(user_1)
-    url = reverse("wishlist_profile", kwargs={"profile_id": user_2.profile.id})
+    url = reverse("wishlist_profile", kwargs={"profile_id": user_2.profile.id})  # type: ignore[attr-defined]
     response = client.get(url)
     basic_asserts_template(cast(HttpResponse, response), VarStr.WISHITEM_TITLE)
 
@@ -88,13 +88,13 @@ def test_wishlist_profile_with_private_view(
     cast(
         WishItemModel,
         WishItemFactory(
-            profile=user_2.profile,
+            profile=user_2.profile,  # type: ignore[attr-defined]
             is_private=True,
         ),
     )
 
     client.force_login(user_1)
-    url = reverse("wishlist_profile", kwargs={"profile_id": user_2.profile.id})
+    url = reverse("wishlist_profile", kwargs={"profile_id": user_2.profile.id})  # type: ignore[attr-defined]
     response = client.get(url)
     basic_asserts_template(cast(HttpResponse, response), VarStr.WISHILIST_PROFILE_EMPTY)
 
@@ -104,7 +104,7 @@ def test_wishlist_profile_empty_view_anon(
     client: Client, basic_asserts_template: BasicAssertsTemplate
 ) -> None:
     user = cast(User, UserFactory())
-    url = reverse("wishlist_profile", kwargs={"profile_id": user.profile.id})
+    url = reverse("wishlist_profile", kwargs={"profile_id": user.profile.id})  # type: ignore[attr-defined]
     response = client.get(url)
     basic_asserts_template(cast(HttpResponse, response), VarStr.WISHILIST_PROFILE_EMPTY)
 
@@ -117,11 +117,11 @@ def test_wishlist_profile_view_anon(
         WishItemModel,
         WishItemFactory(
             title=VarStr.WISHITEM_TITLE,
-            profile=user.profile,
+            profile=user.profile,  # type: ignore[attr-defined]
             is_private=False,
         ),
     )
 
-    url = reverse("wishlist_profile", kwargs={"profile_id": user.profile.id})
+    url = reverse("wishlist_profile", kwargs={"profile_id": user.profile.id})  # type: ignore[attr-defined]
     response = client.get(url)
     basic_asserts_template(cast(HttpResponse, response), VarStr.WISHITEM_TITLE)

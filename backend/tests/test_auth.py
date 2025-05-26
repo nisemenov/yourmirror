@@ -5,10 +5,11 @@ from typing import TYPE_CHECKING, cast
 
 import pytest
 
-from django.utils import timezone
 from django.contrib.auth.models import User
+from django.core import mail
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
+from django.utils import timezone
 
 from tests.factories import RegistrationTokenFactory, UserFactory
 from tests.values import VarStr
@@ -20,7 +21,11 @@ if TYPE_CHECKING:
     from collections.abc import Callable
     from django.db.models import QuerySet
     from django.test import Client
-    from tests.conftest import BasicAssertsReverse, BasicAssertsTemplate
+    from tests.conftest import (
+        BasicAssertsReverse,
+        BasicAssertsTemplate,
+        AssertsTaskEmails,
+    )
 
 
 pytestmark = pytest.mark.django_db
@@ -42,7 +47,7 @@ def test_email_registration_form_valid() -> None:
     assert user.email == VarStr.USER_EMAIL
     assert user.username == VarStr.USER_EMAIL
     assert user.first_name == VarStr.USER_NAME
-    assert user.profile.id
+    assert user.profile.id  # type: ignore[attr-defined]
 
 
 # VIEW
@@ -59,6 +64,7 @@ def test_register_view_post(
     client: Client,
     asserts_registration_token: Callable[[QuerySet[RegistrationTokenModel]], None],
     basic_asserts_template: BasicAssertsTemplate,
+    asserts_task_emails: AssertsTaskEmails,
 ) -> None:
     url = reverse("register")
     data = {
@@ -69,6 +75,9 @@ def test_register_view_post(
     }
     response = client.post(url, data)
     basic_asserts_template(cast(HttpResponse, response), VarStr.USER_REG_EMAIL_SENT)
+    asserts_task_emails(
+        mail.outbox, VarStr.CONFIRMATION_EMAIL_SUBJECT, VarStr.USER_EMAIL
+    )
 
     reg_tokens = RegistrationTokenModel.objects.filter(
         email=VarStr.USER_EMAIL,
@@ -81,6 +90,7 @@ def test_register_view_post_expired_tok(
     client: Client,
     asserts_registration_token: Callable[[QuerySet[RegistrationTokenModel]], None],
     basic_asserts_template: BasicAssertsTemplate,
+    asserts_task_emails: AssertsTaskEmails,
 ) -> None:
     reg_token = cast(
         RegistrationTokenModel,
@@ -100,6 +110,9 @@ def test_register_view_post_expired_tok(
     }
     response = client.post(url, data)
     basic_asserts_template(cast(HttpResponse, response), VarStr.USER_REG_EMAIL_SENT)
+    asserts_task_emails(
+        mail.outbox, VarStr.CONFIRMATION_EMAIL_SUBJECT, VarStr.USER_EMAIL
+    )
 
     reg_tokens = RegistrationTokenModel.objects.filter(
         email=VarStr.USER_EMAIL,

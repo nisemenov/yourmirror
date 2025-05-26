@@ -21,7 +21,7 @@ pytestmark = pytest.mark.django_db
 
 def test_follow_model() -> None:
     user_1, user_2 = UserFactory.create_batch(2)
-    profile_1, profile_2 = user_1.profile, user_2.profile
+    profile_1, profile_2 = user_1.profile, user_2.profile  # type: ignore[attr-defined]
 
     follow = FollowModel.objects.create(  # pyright: ignore[reportAttributeAccessIssue]
         follower=profile_1, following=profile_2
@@ -41,7 +41,7 @@ def test_follow_create_view(
     client: Client, basic_asserts_reverse: BasicAssertsReverse
 ) -> None:
     user_1, user_2 = UserFactory.create_batch(2)
-    profile_1, profile_2 = user_1.profile, user_2.profile
+    profile_1, profile_2 = user_1.profile, user_2.profile  # type: ignore[attr-defined]
 
     client.force_login(user_1)
 
@@ -71,7 +71,7 @@ def test_follow_create_view(
 
 def test_follow_self_create_view() -> None:
     user = cast(User, UserFactory())
-    profile = user.profile
+    profile = user.profile  # type: ignore[attr-defined]
 
     with pytest.raises(ValueError, match="User can't follow themselves"):
         FollowModel.objects.create(  # pyright: ignore[reportAttributeAccessIssue]
@@ -81,7 +81,7 @@ def test_follow_self_create_view() -> None:
 
 def test_following_view(client: Client) -> None:
     user_1, user_2 = UserFactory.create_batch(2)
-    profile_1, profile_2 = user_1.profile, user_2.profile
+    profile_1, profile_2 = user_1.profile, user_2.profile  # type: ignore[attr-defined]
 
     client.force_login(user_1)
 
@@ -120,7 +120,7 @@ def test_profile_views_login_req(
     profile_id: bool,
 ) -> None:
     user = cast(User, UserFactory())
-    profile = user.profile
+    profile = user.profile  # type: ignore[attr-defined]
     if profile_id:
         url = reverse(url_name, kwargs={"profile_id": profile.id})
     else:
