@@ -15,7 +15,7 @@ run-link-preview:
 
 .PHONY: tailwind-install
 tailwind-install:
-	uv run --package yourmirror.backend -- python backend/manage.py tailwind install --settings=yourmirror.settings.dev
+	uv run --package yourmirror.backend -- python backend/manage.py tailwind install
 
 .PHONY: tailwind-start
 tailwind-start:
