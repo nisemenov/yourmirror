@@ -1,6 +1,7 @@
-from .base import (
+from .settings import (
     BASE_DIR,
     PROJECT_ROOT as PROJECT_ROOT,
+    ALLOWED_HOSTS as ALLOWED_HOSTS,
     INSTALLED_APPS as INSTALLED_APPS,
     MIDDLEWARE as MIDDLEWARE,
     ROOT_URLCONF as ROOT_URLCONF,
@@ -22,8 +23,6 @@ from .base import (
 DEBUG = False
 
 SECRET_KEY = "bd1@i20-z#05cj4fdj$xp%758k9*-dtn@fores4tn&xx920@ui"
-
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
 DATABASES = {
     "default": {
