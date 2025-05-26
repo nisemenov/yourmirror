@@ -47,7 +47,7 @@ def test_email_registration_form_valid() -> None:
     assert user.email == VarStr.USER_EMAIL
     assert user.username == VarStr.USER_EMAIL
     assert user.first_name == VarStr.USER_NAME
-    assert user.profile.id  # type: ignore[attr-defined]
+    assert user.profile.id
 
 
 # VIEW

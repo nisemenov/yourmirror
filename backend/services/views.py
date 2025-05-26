@@ -153,7 +153,7 @@ def confirm_first_reservation_email(request: HttpRequest, token: str) -> HttpRes
                 },
             )
 
-            wishitem.reserved = user.profile  # type: ignore[union-attr, attr-defined]
+            wishitem.reserved = user.profile  # type: ignore[union-attr]
             wishitem.save()  # type: ignore[union-attr]
 
             # Отправка письма

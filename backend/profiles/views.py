@@ -24,15 +24,14 @@ class FollowingView(LoginRequiredMixin, ListView):  # type: ignore[type-arg]
 
     def get_queryset(self) -> QuerySet[ProfileModel]:
         user = cast(User, self.request.user)
-        profile = cast(ProfileModel, user.profile)  # type: ignore[attr-defined]
-        return profile.following
+        return user.profile.following
 
 
 class FollowCreateView(LoginRequiredMixin, ListView):  # type: ignore[type-arg]
     def post(self, request: HttpRequest, profile_id: int) -> HttpResponse:
         target_profile = get_object_or_404(ProfileModel, id=profile_id)
         user = cast(User, request.user)
-        me = user.profile  # type: ignore[attr-defined]
+        me = user.profile
 
         follow_obj, created = FollowModel.objects.get_or_create(  # pyright: ignore[reportAttributeAccessIssue]
             follower=me,
@@ -59,7 +58,7 @@ def settings(request: HttpRequest) -> HttpResponse:
             initial={
                 "email": user.email,
                 "first_name": user.first_name,
-                "telegram_id": getattr(user.profile, "telegram_id", ""),  # type: ignore[attr-defined]
+                "telegram_id": getattr(user.profile, "telegram_id", ""),
             },
         )
     return render(request, "settings/main.html", {"form": form})

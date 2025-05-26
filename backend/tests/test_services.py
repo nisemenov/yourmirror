@@ -126,7 +126,7 @@ def test_confirm_first_reservation_with_race_conditions(
         WishItemModel,
         WishItemFactory(
             is_private=False,
-            reserved=cast(User, UserFactory()).profile,  # type: ignore[attr-defined]
+            reserved=cast(User, UserFactory()).profile,
         ),
     )
     reg_token = cast(

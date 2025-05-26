@@ -46,8 +46,8 @@ def test_wishitem_form() -> None:
     form = WishItemForm(data=form_data)
     assert form.is_valid()
 
-    form.save(profile=user.profile)  # type: ignore[attr-defined]
-    assert len(WishItemModel.objects.filter(profile=user.profile)) == 1  # type: ignore[attr-defined]
+    form.save(profile=user.profile)
+    assert len(WishItemModel.objects.filter(profile=user.profile)) == 1
 
 
 def test_wishitem_form_missing_required() -> None:
@@ -80,7 +80,7 @@ def test_wishitem_detail_view(
         WishItemModel,
         WishItemFactory(
             title=VarStr.WISHITEM_TITLE,
-            profile=user.profile,  # type: ignore[attr-defined]
+            profile=user.profile,
         ),
     )
 
@@ -94,7 +94,7 @@ def test_wishitem_detail_view_private(client: Client) -> None:
     user_1, user_2 = UserFactory.create_batch(2)
     wishitem = cast(
         WishItemModel,
-        WishItemFactory(profile=user_2.profile, is_private=True),  # type: ignore[attr-defined]
+        WishItemFactory(profile=user_2.profile, is_private=True),
     )
 
     client.force_login(user_1)
@@ -120,7 +120,7 @@ def test_wishitem_create_view(
     assert response.status_code == 302
     assert WishItemModel.objects.filter(  # pyright: ignore[reportAttributeAccessIssue]
         title=VarStr.WISHITEM_TITLE,
-        profile=user.profile,  # type: ignore[attr-defined]
+        profile=user.profile,
     ).exists()
 
 
@@ -130,7 +130,7 @@ def test_wishitem_update_view(client: Client) -> None:
         WishItemModel,
         WishItemFactory(
             title=VarStr.WISHITEM_TITLE,
-            profile=user.profile,  # type: ignore[attr-defined]
+            profile=user.profile,
         ),
     )
     client.force_login(user)
@@ -150,7 +150,7 @@ def test_delete_view(client: Client) -> None:
     wishitem = cast(
         WishItemModel,
         WishItemFactory(
-            profile=user.profile,  # type: ignore[attr-defined]
+            profile=user.profile,
         ),
     )
     client.force_login(user)
@@ -175,7 +175,7 @@ def test_wishitem_detail_view_my_without_buttons(
     wishitem = cast(
         WishItemModel,
         WishItemFactory(
-            profile=user.profile,  # type: ignore[attr-defined]
+            profile=user.profile,
         ),
     )
     client.force_login(user)
@@ -308,7 +308,7 @@ def test_wishitem_detail_my_post_to_reserve(
     wishitem = cast(
         WishItemModel,
         WishItemFactory(
-            profile=user.profile,  # type: ignore[attr-defined]
+            profile=user.profile,
         ),
     )
     client.force_login(user)
@@ -329,7 +329,7 @@ def test_wishitem_detail_my_post_to_reserve_without_auth(
     wishitem = cast(
         WishItemModel,
         WishItemFactory(
-            profile=user.profile,  # type: ignore[attr-defined]
+            profile=user.profile,
         ),
     )
     assert not wishitem.reserved

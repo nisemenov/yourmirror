@@ -113,7 +113,7 @@ def asserts_user() -> AssertsUser:
             assert users[0].email == VarStr.USER_EMAIL
             assert users[0].username == VarStr.USER_EMAIL
         if profile:
-            assert users[0].profile.id  # type: ignore[attr-defined]
+            assert users[0].profile.id
 
     return asserts
 
