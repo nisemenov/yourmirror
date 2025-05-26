@@ -33,13 +33,14 @@ class WishlistMyView(LoginRequiredMixin, ListView):  # type: ignore[type-arg]
 
     def get_queryset(self) -> QuerySet[WishItemModel]:
         user = cast(User, self.request.user)
-        return user.profile.wishitems.all()
+        profile = cast(ProfileModel, user.profile)  # type: ignore[attr-defined]
+        return profile.wishitems.all()
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         user = cast(User, self.request.user)
         share_url = self.request.build_absolute_uri(
-            reverse("wishlist_profile", kwargs={"profile_id": user.profile.id})
+            reverse("wishlist_profile", kwargs={"profile_id": user.profile.id})  # type: ignore[attr-defined]
         )
         context["share_url"] = share_url
         return context
@@ -54,7 +55,7 @@ class WishlistProfileView(ListView):  # type: ignore[type-arg]
     ) -> HttpResponseBase:
         profile_id = kwargs.get("profile_id")
 
-        if request.user.is_authenticated and profile_id == request.user.profile.id:
+        if request.user.is_authenticated and profile_id == request.user.profile.id:  # type: ignore[attr-defined]
             return redirect("wishlist_me")
 
         return super().dispatch(request, *args, **kwargs)
@@ -64,7 +65,7 @@ class WishlistProfileView(ListView):  # type: ignore[type-arg]
 
     def get_queryset(self) -> QuerySet[WishItemModel]:
         profile = self.get_profile()
-        if self.request.user.is_authenticated and self.request.user.profile == profile:
+        if self.request.user.is_authenticated and self.request.user.profile == profile:  # type: ignore[attr-defined]
             return profile.wishitems.all()
         return profile.wishitems.filter(is_private=False)
 
@@ -74,8 +75,8 @@ class WishlistProfileView(ListView):  # type: ignore[type-arg]
         context["owner"] = profile
 
         if self.request.user.is_authenticated:
-            context["is_owner"] = self.request.user.profile == profile
-            context["is_following"] = self.request.user.profile.is_following(profile)
+            context["is_owner"] = self.request.user.profile == profile  # type: ignore[attr-defined]
+            context["is_following"] = self.request.user.profile.is_following(profile)  # type: ignore[attr-defined]
         else:
             context["is_owner"] = False
             context["is_following"] = False
@@ -146,10 +147,10 @@ class WishItemDetailView(UserPassesTestMixin, DetailView):  # type: ignore[type-
                 status=403,
             )
         else:
-            if wishitem.reserved == user.profile:
+            if wishitem.reserved == user.profile:  # type: ignore[attr-defined]
                 wishitem.reserved = None
             elif wishitem.reserved is None:
-                wishitem.reserved = user.profile
+                wishitem.reserved = user.profile  # type: ignore[attr-defined]
             else:
                 return render(
                     request,
@@ -173,7 +174,7 @@ class WishItemCreateView(LoginRequiredMixin, CreateView):  # type: ignore[type-a
 
     def form_valid(self, form: WishItemForm) -> HttpResponse:
         user = cast(User, self.request.user)
-        self.object = form.save(profile=user.profile)
+        self.object = form.save(profile=user.profile)  # type: ignore[attr-defined]
         return super().form_valid(form)
 
 
