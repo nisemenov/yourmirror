@@ -15,7 +15,6 @@ from django.utils import timezone
 
 from services.models import RegistrationTokenModel
 from tasks.email import send_confirmation_email, send_reservation_email
-from yourmirror.settings import LOGIN_REMEMBER_ME
 
 from .forms import EmailRegistrationForm
 
@@ -39,7 +38,7 @@ class CustomLoginView(LoginView):
         if not remember_me:
             self.request.session.set_expiry(0)
         else:
-            self.request.session.set_expiry(LOGIN_REMEMBER_ME)
+            self.request.session.set_expiry(1)
         return super().form_valid(form)
 
 
@@ -154,7 +153,7 @@ def confirm_first_reservation_email(request: HttpRequest, token: str) -> HttpRes
                 },
             )
 
-            wishitem.reserved = user.profile  # type: ignore[union-attr]
+            wishitem.reserved = user.profile  # type: ignore[union-attr, attr-defined]
             wishitem.save()  # type: ignore[union-attr]
 
             # Отправка письма
