@@ -3,7 +3,7 @@ import os
 from celery import Celery
 
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "yourmirror.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "yourmirror.settings.dev")
 
 app = Celery("yourmirror")
 

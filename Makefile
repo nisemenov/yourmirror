@@ -7,7 +7,7 @@ sync-all:
 # SERVER
 .PHONY: run-backend
 run-backend:
-	uv run --package yourmirror.backend -- python backend/manage.py runserver
+	uv run --package yourmirror.backend -- python backend/manage.py runserver --settings=yourmirror.settings.dev
 
 .PHONY: run-link-preview
 run-link-preview:
@@ -15,11 +15,11 @@ run-link-preview:
 
 .PHONY: tailwind-install
 tailwind-install:
-	uv run --package yourmirror.backend -- python backend/manage.py tailwind install
+	uv run --package yourmirror.backend -- python backend/manage.py tailwind install --settings=yourmirror.settings.dev
 
 .PHONY: tailwind-start
 tailwind-start:
-	uv run --package yourmirror.backend -- python backend/manage.py tailwind start
+	uv run --package yourmirror.backend -- python backend/manage.py tailwind start --settings=yourmirror.settings.dev
 
 
 # DOCKER

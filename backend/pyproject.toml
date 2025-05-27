@@ -27,7 +27,7 @@ lint = [
 ]
 
 [tool.pytest.ini_options]
-DJANGO_SETTINGS_MODULE = "yourmirror.settings_test"
+DJANGO_SETTINGS_MODULE = "yourmirror.settings.test"
 python_files = ["test_*.py"]
 filterwarnings = [
     "ignore::DeprecationWarning:passlib.*",
@@ -68,4 +68,4 @@ module = [
 ignore_errors = true
 
 [tool.django-stubs]
-django_settings_module = "yourmirror.settings"
+django_settings_module = "yourmirror.settings.test"

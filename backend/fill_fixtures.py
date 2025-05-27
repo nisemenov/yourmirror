@@ -1,7 +1,7 @@
 import os
 import django
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "yourmirror.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "yourmirror.settings.dev")
 django.setup()
 
 
